@@ -9,9 +9,9 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#a12727">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Kalkulator Dimsum">
-  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="DimsumCalc">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
 
   <!-- Library XLSX -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -833,12 +833,9 @@ window.onload = function() {
 };
 
   if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("service-worker.js")
-        .then(reg => console.log("Service Worker registered:", reg.scope))
-        .catch(err => console.log("Service Worker failed:", err));
-    });
+    navigator.serviceWorker.register("sw.js")
+      .then(() => console.log("Service Worker terdaftar"))
+      .catch((err) => console.log("SW gagal:", err));
   }
 </script>
 </body>
