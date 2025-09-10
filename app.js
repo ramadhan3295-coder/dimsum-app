@@ -611,10 +611,11 @@ function updateSummary() {
 
 // ====== Export Excel ======
 function downloadExcel() {
-  // Sheet 1: Rekap Penjualan
+  // ===== Sheet 1: Rekap Penjualan =====
   const dataRekap = [
     ["No","Tanggal","Jenis","Varian","Box","Pcs","Harga/Box","Omzet","HPP","Profit","Margin"]
   ];
+  let totalOmzet=0, totalHPP=0, totalProfit=0;
   rekapData.forEach((r,i)=>{
     dataRekap.push([
       i+1,
@@ -629,25 +630,28 @@ function downloadExcel() {
       r.profit,
       r.marginStr
     ]);
+    totalOmzet += r.totalOmzet;
+    totalHPP   += r.totalHPP;
+    totalProfit+= r.profit;
   });
-
+  // ✅ Tambahkan baris total
+  dataRekap.push(["","","","","","","TOTAL", totalOmzet, totalHPP, totalProfit,""]);
   const ws1 = XLSX.utils.aoa_to_sheet(dataRekap);
 
-  // Sheet 2: Catatan Pengeluaran
-  const dataPengeluaran = [
-    ["No","Deskripsi","Nominal","Tanggal"]
-  ];
+  // ===== Sheet 2: Catatan Pengeluaran =====
+  const dataPengeluaran = [["No","Deskripsi","Nominal","Tanggal"]];
+  let totalPengeluaran=0;
   pengeluaranData.forEach((p,i)=>{
     dataPengeluaran.push([i+1, p.item, p.biaya, p.tanggal]);
+    totalPengeluaran += p.biaya;
   });
+  // ✅ Tambahkan total pengeluaran
+  dataPengeluaran.push(["","","TOTAL", totalPengeluaran]);
   const ws2 = XLSX.utils.aoa_to_sheet(dataPengeluaran);
 
-  // Sheet 3: Ringkasan Keuangan
-  let totalOmzet = rekapData.reduce((sum,r)=>sum+r.totalOmzet,0);
-  let totalHPP   = rekapData.reduce((sum,r)=>sum+r.totalHPP,0);
-  let totalProfit= rekapData.reduce((sum,r)=>sum+r.profit,0);
-  let totalPengeluaran = pengeluaranData.reduce((sum,p)=>sum+p.biaya,0);
+  // ===== Sheet 3: Ringkasan Keuangan =====
   let profitBersih = totalProfit - totalPengeluaran;
+  let marginRata = totalHPP > 0 ? ((totalProfit / totalHPP) * 100).toFixed(1) + "%" : "0%";
 
   const dataSummary = [
     ["Ringkasan Keuangan"],
@@ -655,25 +659,31 @@ function downloadExcel() {
     ["Total HPP / Modal", totalHPP],
     ["Profit Kotor", totalProfit],
     ["Total Biaya Operasional", totalPengeluaran],
-    ["Profit Bersih Penjual", profitBersih]
+    ["Profit Bersih Penjual", profitBersih],
+    ["Margin Rata-rata", marginRata],
+    [],
+    // ✅ Ringkasan akhir
+    ["TOTAL OMZET", totalOmzet],
+    ["TOTAL PENGELUARAN", totalPengeluaran],
+    ["TOTAL PROFIT BERSIH", profitBersih],
+    ["MARGIN RATA-RATA", marginRata]
   ];
   const ws3 = XLSX.utils.aoa_to_sheet(dataSummary);
 
-  // Buat workbook & tambahkan sheet
+  // ===== Buat workbook & simpan =====
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws1, "Rekap Penjualan");
   XLSX.utils.book_append_sheet(wb, ws2, "Pengeluaran");
   XLSX.utils.book_append_sheet(wb, ws3, "Ringkasan");
 
-  // Simpan file
-// Tambahkan tanggal (format DD-MM-YYYY versi Indonesia)
-const today = new Date();
-const dd = String(today.getDate()).padStart(2, '0');
-const mm = String(today.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
-const yyyy = today.getFullYear();
-const dateStr = `${dd}-${mm}-${yyyy}`;
+  // Tambahkan tanggal ke nama file (DD-MM-YYYY)
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const yyyy = today.getFullYear();
+  const dateStr = `${dd}-${mm}-${yyyy}`;
 
-XLSX.writeFile(wb, `Laporan_Dimsum_${dateStr}.xlsx`);
+  XLSX.writeFile(wb, `Laporan_Dimsum_${dateStr}.xlsx`);
 }
 
 // ===== Init =====
