@@ -226,7 +226,7 @@
   </div>
 </div>
 
-<script>
+<script src="script.js">
 // ===== Util =====
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -838,5 +838,7 @@ window.onload = function() {
       .catch((err) => console.log("SW gagal:", err));
   }
 </script>
+<button class="exit-btn" onclick="exitApp()">Keluar</button>
+<p id="status"></p>
 </body>
 </html>
