@@ -558,12 +558,17 @@ function tambahPengeluaran() {   // ✅ versi baru dipakai
 function renderPengeluaran(){
   const tbody=document.getElementById("pengeluaranBody");
   tbody.innerHTML="";
+  let totalPengeluaran = 0;
+
   pengeluaranData.forEach(p=>{
+    totalPengeluaran += p.biaya;
     const tr=document.createElement("tr");
     tr.innerHTML=`<td>${p.item}</td><td>${formatRp(p.biaya)}</td><td>${p.tanggal}</td>
     <td><button onclick="hapusPengeluaran('${p.id}')">❌</button></td>`;
     tbody.appendChild(tr);
   });
+
+  document.getElementById("totalPengeluaran").textContent = formatRp(totalPengeluaran);
 }
 
 function hapusPengeluaran(id){
@@ -571,6 +576,33 @@ function hapusPengeluaran(id){
   saveToLocalStorage();
   renderPengeluaran();
   updateSummary();
+}
+
+function updateSummary() {
+  let totalOmzet=0, totalHPP=0, totalProfit=0;
+
+  rekapData.forEach(r=>{
+    totalOmzet+=r.totalOmzet;
+    totalHPP+=r.totalHPP;
+    totalProfit+=r.profit;
+  });
+
+  // Hitung total pengeluaran
+  let totalPengeluaran = pengeluaranData.reduce((sum,p)=> sum+p.biaya, 0);
+
+  // Profit bersih = profit kotor - pengeluaran
+  let profitBersih = totalProfit - totalPengeluaran;
+
+  // Update ringkasan
+  document.getElementById("ringkasanOmzet").textContent = formatRp(totalOmzet);
+  document.getElementById("ringkasanHPP").textContent = formatRp(totalHPP);
+  document.getElementById("ringkasanProfitKotor").textContent = formatRp(totalProfit);
+  document.getElementById("ringkasanBiaya").textContent = formatRp(totalPengeluaran);
+  document.getElementById("ringkasanProfitBersih").textContent = formatRp(profitBersih);
+
+  // Update tabel pengeluaran footer
+  document.getElementById("totalPengeluaran").textContent = formatRp(totalPengeluaran);
+  document.getElementById("profitBersih").textContent = formatRp(profitBersih);
 }
 
 // ====== Export Excel ======
