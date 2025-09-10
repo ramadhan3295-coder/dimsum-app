@@ -805,21 +805,82 @@ function hapusPengeluaran(btn) {
   hitungProfitBersih();
 }
 
-// ===== Perbaikan downloadExcel =====
+// ===== Export Excel (Rekap + Pengeluaran + Total) =====
 function downloadExcel() {
+  const wb = XLSX.utils.book_new();
+
+  // ========== Sheet Rekap ==========
+  const wsData = [
+    ["No","Tanggal","Jenis","Jenis Stok","Varian","Box","Pcs","Sisa Stok",
+     "Harga/Box","Omzet","HPP","Profit","Margin"]
+  ];
+  let totalOmzet = 0, totalHPP = 0, totalProfit = 0;
+  rekapData.forEach((r,i)=>{
+    wsData.push([
+      i+1, r.tanggal, r.jenis, r.jenisStok, r.varianLabel,
+      r.jumlahBox, r.jumlahPcs, r.sisaStok,
+      r.hargaPerBox, r.totalOmzet, r.totalHPP, r.profit, r.marginStr
+    ]);
+    totalOmzet  += r.totalOmzet;
+    totalHPP    += r.totalHPP;
+    totalProfit += r.profit;
+  });
+
+  // Tambah baris total
+  wsData.push([
+    "", "", "", "", "TOTAL",
+    "", "", "",
+    "", totalOmzet, totalHPP, totalProfit, ""
+  ]);
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Format angka ribuan untuk kolom angka
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let R = 1; R <= range.e.r; ++R) {
+    for (let C = 5; C <= 12; ++C) { // kolom Box sampai Profit
+      const cell = ws[XLSX.utils.encode_cell({r:R, c:C})];
+      if (cell && typeof cell.v === "number") {
+        cell.t = "n";
+        cell.z = "#,##0"; // format ribuan
+      }
+    }
+  }
+  XLSX.utils.book_append_sheet(wb, ws, "Rekap Penjualan");
+
+  // ========== Sheet Pengeluaran ==========
+  const pengeluaran = JSON.parse(localStorage.getItem("pengeluaranData")||"[]");
+  const wsPengeluaran = [
+    ["No","Tanggal","Item","Biaya"]
+  ];
+  let totalPengeluaran = 0;
+  pengeluaran.forEach((p,i)=>{
+    wsPengeluaran.push([i+1, p.tanggal, p.item, p.biaya]);
+    totalPengeluaran += p.biaya;
+  });
+
+  // Tambah baris total
+  wsPengeluaran.push(["", "", "TOTAL", totalPengeluaran]);
+
+  const ws2 = XLSX.utils.aoa_to_sheet(wsPengeluaran);
+
+  // Format angka ribuan untuk biaya
+  const range2 = XLSX.utils.decode_range(ws2['!ref']);
+  for (let R = 1; R <= range2.e.r; ++R) {
+    const cell = ws2[XLSX.utils.encode_cell({r:R, c:3})]; // kolom Biaya
+    if (cell && typeof cell.v === "number") {
+      cell.t = "n";
+      cell.z = "#,##0";
+    }
+  }
+  XLSX.utils.book_append_sheet(wb, ws2, "Pengeluaran");
+
+  // ========== Nama file otomatis ==========
   const today = new Date();
   const yyyy = today.getFullYear();
   const mm = String(today.getMonth() + 1).padStart(2, '0');
   const dd = String(today.getDate()).padStart(2, '0');
   const fileName = `Rekap_Penjualan_Dimsum_${yyyy}-${mm}-${dd}.xlsx`;
-
-  // Buat workbook baru
-  const wb = XLSX.utils.book_new();
-
-  // Kalau mau export tabel langsung:
-  const table = document.getElementById("rekapTable");
-  const ws = XLSX.utils.table_to_sheet(table);
-  XLSX.utils.book_append_sheet(wb, ws, "Rekap");
 
   XLSX.writeFile(wb, fileName);
 }
