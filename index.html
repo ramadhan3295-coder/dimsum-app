@@ -226,6 +226,9 @@
   </div>
 </div>
 
+<button class="exit-btn" onclick="exitApp()">Keluar</button>
+<p id="status"></p>
+
 <script src="script.js">
 // ===== Util =====
 function generateId() {
@@ -838,7 +841,5 @@ window.onload = function() {
       .catch((err) => console.log("SW gagal:", err));
   }
 </script>
-<button class="exit-btn" onclick="exitApp()">Keluar</button>
-<p id="status"></p>
 </body>
 </html>
