@@ -1,4 +1,7 @@
-* {
+<<<<<<< HEAD
+<style>
+
+  * {
     box-sizing: border-box;
   }
 
@@ -362,3 +365,376 @@ td.aksi-cell {
 .modal-stok.abu {
   color: #666;
 }
+
+
+=======
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --gap: 10px;
+    --radius: 12px;
+    --shadow: 0 2px 6px rgba(0,0,0,.08);
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    font-size: 14px;
+    background: #f9f9f9;
+    color: #111;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  h2 {
+    text-align: center;
+    background: #ffeb3b;
+    padding: 8px;
+    border-radius: var(--radius);
+    font-size: 18px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  label {
+    font-weight: 600;
+    display: block;
+    margin: 6px 0 6px;
+    font-size: 14px;
+  }
+
+  select, input, button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #d9d9d9;
+    font-size: 16px;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+  }
+
+  .row > div {
+    flex: 1 1 100%;
+  }
+
+  @media (min-width: 480px) {
+    .row > div {
+      flex: 1 1 calc(50% - var(--gap));
+    }
+  }
+
+  .btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+    margin-top: 10px;
+  }
+
+  .btns button {
+    flex: 1 1 calc(33.33% - var(--gap));
+    font-weight: 700;
+  }
+
+  .btn-danger {
+    background: #ff4d4d;
+    color: #fff;
+    border: none;
+  }
+  
+    .btn-danger1 {
+    background: #b22222;
+    color: #fff;
+    border: none;
+  }
+
+  .btn-primary {
+    background: #0d6efd;
+    color: #fff;
+    border: none;
+  }
+
+  .btn-secondary {
+    background: #10b981;
+    color: #fff;
+    border: none;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 13px;
+    min-width: 1000px;
+    white-space: nowrap;
+  }
+
+  th, td {
+    border: 1px solid #e5e5e5;
+    padding: 8px;
+    text-align: center;
+  }
+
+  th {
+    background: #f2f2f2;
+  }
+
+  .profit {
+    background: #ffe2e2;
+    font-weight: 700;
+  }
+
+  tfoot td {
+    font-weight: 800;
+    background: #e8f8db;
+  }
+
+  .stok-habis {
+    background: #ff4d4d;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .stok-summary {
+    margin-top: 12px;
+    font-weight: 700;
+    background: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  table input[type="number"] {
+    width: 100px;
+  }
+  
+  /* Container Ringkasan Keuangan dan Pengurang Omzet Kotor */
+.card.custom-shift,
+.table-wrapper.custom-shift {
+  width: 100%;
+  max-width: 100%;
+  padding: 8px;
+  overflow-x: auto;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 480px) {
+  h2, h3 {
+    font-size: 16px;
+  }
+
+  label {
+    font-size: 13px;
+  }
+
+  table {
+    font-size: 11px;
+  }
+
+  .stok-summary {
+    font-size: 13px;
+  }
+
+  input, select, button {
+    font-size: 14px;
+  }
+}
+
+/* Atur ukuran tabel supaya lebih kecil dan rapih */
+.card.custom-shift table,
+.table-wrapper.custom-shift table {
+  font-size: 12px;       /* kecilkan ukuran font */
+  width: 100%;           /* agar tabel mengisi container */
+  border-collapse: collapse;
+}
+
+/* Kurangi padding sel supaya tabel tidak terlalu lebar */
+.card.custom-shift table th,
+.card.custom-shift table td,
+.table-wrapper.custom-shift table th,
+.table-wrapper.custom-shift table td {
+  padding: 4px 8px;
+  white-space: nowrap;   /* supaya teks tidak patah baris */
+  border: 1px solid #ccc; /* supaya tabel tetap terlihat rapi */
+}
+
+/* Optional: hover effect supaya tabel interaktif */
+.card.custom-shift table tbody tr:hover,
+.table-wrapper.custom-shift table tbody tr:hover {
+  background-color: #f0f0f0;
+}
+
+/* Tombol aksi kecil */
+.btn-aksi {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;   /* kecil pas */
+  margin: 0 2px;
+  padding: 2px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.btn-aksi.edit { color: #1976d2; }   /* biru */
+.btn-aksi.hapus { color: #d32f2f; } /* merah */
+.btn-aksi.simpan { color: #2e7d32; }/* hijau */
+.btn-aksi.batal { color: #999; }     /* abu */
+
+/* Kolom aksi jangan terlalu sempit */
+#rekapTable th:last-child,
+#rekapTable td:last-child {
+  width: 60px;          /* kasih lebar tetap */
+  min-width: 60px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* === Responsif untuk layar kecil (iPhone 6s, Android) === */
+@media screen and (max-width: 420px) {
+  body {
+    margin: 6px;
+    font-size: 13px;
+  }
+
+  h2 {
+    font-size: 16px;
+    padding: 6px;
+  }
+
+  h3 {
+    font-size: 14px;
+  }
+
+  label {
+    font-size: 12px;
+  }
+
+  select, input, button {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  /* bungkus tabel dengan scroll yang halus */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    font-size: 11px;
+    min-width: 700px;   /* cukup kecil biar tetap bisa discroll */
+  }
+
+  th, td {
+    padding: 4px 6px;
+  }
+
+  /* tombol aksi biar muat di layar kecil */
+  .btn-aksi {
+    font-size: 12px;
+    padding: 2px;
+    margin: 0 1px;
+  }
+
+  #rekapTable th:last-child,
+  #rekapTable td:last-child {
+    width: 50px;
+    min-width: 50px;
+  }
+
+  /* ringkasan stok */
+  .stok-summary {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  /* tombol utama di bawah card lebih rapat */
+  .btns button {
+    flex: 1 1 100%; /* tombol full width biar gampang ditekan */
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* Kolom Aksi biar lebih ramping */
+td.aksi-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* jarak antar ikon */
+}
+
+.action-buttons button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px; /* kecil */
+  padding: 2px 4px;
+  transition: transform 0.2s;
+}
+
+.action-buttons button:hover {
+  transform: scale(1.2);
+}
+
+/* Modal styling */
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: auto;
+  background: rgba(0,0,0,0.5);
+}
+.modal-content {
+  background: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+}
+.close {
+  float: right;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-stok {
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.modal-stok.hijau {
+  color: #0a0;
+}
+.modal-stok.abu {
+  color: #666;
+}
+
+
+>>>>>>> e82b7809b7b7fd2ddf362fd91e5c6f26b2efeb2e
+</style>
