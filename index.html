@@ -22,215 +22,216 @@
 <body>
   <h2>Kalkulator Dimsum Terstruktur</h2>
 
-<div class="card">
-  <!-- Tambah stok -->
-  <div class="row">
+  <div class="card">
+    <!-- Tambah stok -->
+    <div class="row">
+      <div>
+        <label for="stokMasuk">Stok Masuk Dimsum (pcs)</label>
+        <input type="number" id="stokMasuk" value="0" min="0"/>
+        <label for="stokJenis">Jenis Stok</label>
+        <select id="stokJenis">
+          <option value="__placeholder" disabled selected>--Pilih Jenis Stok--</option>
+          <option value="jumbo">Dimsum Jumbo</option>
+          <option value="medium">Dimsum Medium</option>
+        </select>
+        <button class="btn-secondary" style="margin-top:6px;" onclick="tambahStok()">➕ Tambah Stok</button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div>
+        <label for="jenisProduk">Jenis Produk</label>
+        <select id="jenisProduk" onchange="onJenisChange()">
+          <option value="__placeholder" disabled selected>--Pilih Produk--</option>
+          <option value="jumbofrozen">Dimsum Jumbo Frozen</option>
+          <option value="mentai">Dimsum Jumbo Mentai</option>
+          <option value="original">Dimsum Jumbo Original</option>
+          <option value="mediumfrozen">Dimsum Medium Frozen</option>
+          <option value="mediummentai">Dimsum Medium Mentai</option>
+          <option value="mediumoriginal">Dimsum Medium Original</option>
+        </select>
+      </div>
+      <div>
+        <label for="varian">Varian Box</label>
+        <select id="varian" onchange="onVarianChange()"></select>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div>
+        <label for="jumlahBox">Jumlah Box Terjual</label>
+        <input type="number" id="jumlahBox" value="0" min="0" oninput="hitungDariBox()"/>
+      </div>
+      <div>
+        <label for="jumlahPcs">Jumlah Dimsum Terjual (pcs)</label>
+        <input type="number" id="jumlahPcs" value="0" min="0" oninput="hitungDariPcs()"/>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button class="btn-primary" onclick="simpanData()">💾 Simpan</button>
+      <button class="btn-secondary" onclick="downloadExcel()">⬇️ Excel</button>
+      <button class="btn-danger" onclick="hapusRekap()">🗑️ Hapus</button>
+      <button class="btn-danger1" onclick="resetLocalStorage()">♻️ Reset LocalStorage</button>
+    </div>
+  </div>
+
+  <!-- 🔎 Pencarian -->
+  <div style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
     <div>
-      <label for="stokMasuk">Stok Masuk Dimsum (pcs)</label>
-      <input type="number" id="stokMasuk" value="0" min="0"/>
-      <label for="stokJenis">Jenis Stok</label>
-      <select id="stokJenis">
-        <option value="__placeholder" disabled selected>--Pilih Jenis Stok--</option>
-        <option value="jumbo">Dimsum Jumbo</option>
-        <option value="medium">Dimsum Medium</option>
-      </select>
-      <button class="btn-secondary" style="margin-top:6px;" onclick="tambahStok()">➕ Tambah Stok</button>
+      🔎 Cari: 
+      <input type="text" id="searchInput" placeholder=" Ketik untuk mencari..." style="padding:5px; width:200px;">
     </div>
   </div>
 
-  <div class="row" style="margin-top:10px;">
-    <div>
-      <label for="jenisProduk">Jenis Produk</label>
-      <select id="jenisProduk" onchange="onJenisChange()">
-        <option value="__placeholder" disabled selected>--Pilih Produk--</option>
-		<option value="jumbofrozen">Dimsum Jumbo Frozen</option>
-        <option value="mentai">Dimsum Jumbo Mentai</option>
-        <option value="original">Dimsum Jumbo Original</option>
-		<option value="mediumfrozen">Dimsum Medium Frozen</option>
-        <option value="mediummentai">Dimsum Medium Mentai</option>
-        <option value="mediumoriginal">Dimsum Medium Original</option>
-      </select>
-    </div>
-    <div>
-      <label for="varian">Varian Box</label>
-      <select id="varian" onchange="onVarianChange()"></select>
-    </div>
-  </div>
-
-  <div class="row" style="margin-top:10px;">
-    <div>
-      <label for="jumlahBox">Jumlah Box Terjual</label>
-      <input type="number" id="jumlahBox" value="0" min="0" oninput="hitungDariBox()"/>
-    </div>
-    <div>
-      <label for="jumlahPcs">Jumlah Dimsum Terjual (pcs)</label>
-      <input type="number" id="jumlahPcs" value="0" min="0" oninput="hitungDariPcs()"/>
-    </div>
-  </div>
-
-  <div class="btns">
-  <button class="btn-primary" onclick="simpanData()">💾 Simpan</button>
-  <button class="btn-secondary" onclick="downloadExcel()">⬇️ Excel</button>
-  <button class="btn-danger" onclick="hapusRekap()">🗑️ Hapus</button>
-  <button class="btn-danger1" onclick="resetLocalStorage()">♻️ Reset LocalStorage</button>
-</div>
-</div>
-
-<!-- Tambahkan di atas tabel -->
-<div style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-  <div>
-    🔎 Cari: 
-    <input type="text" id="searchInput" placeholder=" Ketik untuk mencari..." style="padding:5px; width:200px;">
-  </div>
-</div>
-
-<div class="card">
-  <h3>📊 Rekap Penjualan & Stok</h3>
-<div class="table-wrapper">
-  <table id="rekapTable">
-    <thead>
-      <tr>
-        <th>No</th><th>Tanggal</th><th>Jenis</th><th>Jenis Stok</th><th>Varian</th>
-        <th>Box</th><th>Pcs</th><th>Sisa Stok</th>
-        <th>Harga jual / <br>Box</th><th>Total Omzet <br>kotor</th>
-        <th>Total HPP / <br>Modal usaha</th><th>Profit</th><th>Margin</th><th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-    <tfoot>
-  <!-- Total per halaman -->
-  <tr style="background:#e0f7fa; font-weight:bold; color:#004d40;">
-    <th colspan="9">TOTAL HALAMAN INI</th>
-    <th id="pageOmzet">Rp 0</th>
-    <th id="pageHPP">Rp 0</th>
-    <th id="pageProfit">Rp 0</th>
-    <th id="pageMargin">0 %</th>
-  </tr>
-
-  <tr id="rowFiltered" style="background:#fff9cc; font-weight:bold; color:#665500;">
-  <th colspan="9">TOTAL FILTERED (Hasil Pencarian)</th>
-  <th id="filterOmzet">Rp 0</th>
-  <th id="filterHPP">Rp 0</th>
-  <th id="filterProfit">Rp 0</th>
-  <th id="filterMargin">0 %</th>
-</tr>
-
-
-  <!-- Total keseluruhan -->
-  <tr style="background:#d9fdd3; font-weight:bold; color:#004d00;">
-    <th colspan="9">TOTAL KESELURUHAN</th>
-    <th id="totalJual">Rp 0</th>
-    <th id="totalModal">Rp 0</th>
-    <th id="totalProfit">Rp 0</th>
-    <th id="totalMargin">0 %</th>
-  </tr>
-</tfoot>
-  </table>
-</div>
-
-<!-- Modal Edit -->
-<div id="editModal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <span class="close" onclick="closeEditModal()">&times;</span>
-    <h3>Edit Data Penjualan</h3>
-    <form id="editForm">
-      <input type="hidden" id="editId">
-
-      <label>Jenis:</label>
-      <input type="text" id="editJenis"><br>
-
-      <label>Varian:</label>
-      <input type="text" id="editVarian"><br>
-
-      <label>Jumlah Box:</label>
-      <input type="number" id="editBox"><br>
-
-      <label>Jumlah Pcs:</label>
-      <input type="number" id="editPcs"><br>
-
-      <label>Harga per Box:</label>
-      <input type="number" id="editHargaBox"><br>
-
-      <button type="button" onclick="simpanEdit()">💾 Simpan</button>
-    </form>
-  </div>
-</div>
-  
-  <!-- ✅ Tambahkan navigasi halaman -->
-  <div id="pagination" style="margin-top:10px; text-align:center;"></div>
-
-  <!-- Ringkasan stok akhir -->
-  <div class="stok-summary">
-    🟡 Stok Akhir Jumbo: <span id="stokJumbo">0</span> pcs | 🔵 Stok Akhir Medium: <span id="stokMedium">0</span> pcs
-  </div>
-  
-  <div class="stok-summary" style="margin-top: 6px;">
-<p>💰 Modal tertanam di stok Jumbo: <span id="modalJumbo" class="modal-stok abu">Rp 0</span></p>
-<p>💰 Modal tertanam di stok Medium: <span id="modalMedium" class="modal-stok abu">Rp 0</span></p>
-</div>
-
-  
-<!-- Ringkasan Keuangan -->
-<div class="card custom-shift" style="margin-top: 16px;">
-  <h3>📋 Ringkasan Keuangan</h3>
-  <table>
-    <tbody>
-      <tr><td>Omzet Kotor</td><td id="ringkasanOmzet">Rp 0</td></tr>
-      <tr><td>Total HPP / Modal</td><td id="ringkasanHPP">Rp 0</td></tr>
-      <tr><td>Profit Kotor</td><td id="ringkasanProfitKotor">Rp 0</td></tr>
-      <tr><td>Total Biaya Operasional</td><td id="ringkasanBiaya">Rp 0</td></tr>
-      <tr><td><strong>Profit Bersih Penjual</strong></td><td><strong id="ringkasanProfitBersih">Rp 0</strong></td></tr>
-    </tbody>
-  </table>
-</div>
-
-</div>
-
-<!-- ==================== CATATAN PENGELUARAN (VERSI RAPI) ==================== -->
-<div class="section">
-  <h3>🧾 Catatan Pengeluaran</h3>
-  <button onclick="togglePengeluaran()" class="toggle-btn">📂 Lihat / Sembunyikan Pengeluaran</button>
-
-  <div id="pengeluaranWrapper" style="display:none; margin-top:10px;">
-    <!-- Form input -->
-    <div style="margin-bottom:10px; display:flex; gap:8px; flex-wrap:wrap;">
-      <input type="text" id="descInput" placeholder="Deskripsi pengeluaran" style="flex:1 1 260px;">
-      <input type="number" id="amountInput" placeholder="Nominal (Rp)" style="flex:1 1 180px;">
-      <button style="flex:0 0 auto;" onclick="tambahPengeluaran()">➕ Tambah Pengeluaran</button>
-    </div>
-
-    <!-- Tabel pengeluaran -->
-    <div class="table-wrapper pengeluaran-scroll">
-      <table id="pengeluaranTable">
+  <div class="card">
+    <h3>📊 Rekap Penjualan & Stok</h3>
+    <div class="table-wrapper">
+      <table id="rekapTable">
         <thead>
           <tr>
-            <th>Deskripsi</th>
-            <th>Nominal</th>
-            <th>Tanggal</th>
-            <th>Aksi</th>
+            <th>No</th><th>Tanggal</th><th>Jenis</th><th>Jenis Stok</th><th>Varian</th>
+            <th>Box</th><th>Pcs</th><th>Sisa Stok</th>
+            <th>Harga jual / <br>Box</th><th>Total Omzet <br>kotor</th>
+            <th>Total HPP / <br>Modal usaha</th><th>Profit</th><th>Margin</th><th>Aksi</th>
           </tr>
         </thead>
-        <tbody id="pengeluaranBody"></tbody>
+        <tbody></tbody>
         <tfoot>
-          <tr>
-            <td><strong>Total Pengeluaran</strong></td>
-            <td colspan="3"><strong id="totalPengeluaran">Rp 0</strong></td>
+          <!-- Total per halaman -->
+          <tr style="background:#e0f7fa; font-weight:bold; color:#004d40;">
+            <th colspan="9">TOTAL HALAMAN INI</th>
+            <th id="pageOmzet">Rp 0</th>
+            <th id="pageHPP">Rp 0</th>
+            <th id="pageProfit">Rp 0</th>
+            <th id="pageMargin">0 %</th>
           </tr>
-          <tr>
-            <td><strong>Profit Bersih</strong></td>
-            <td colspan="3"><strong id="profitBersih">Rp 0</strong></td>
+          <!-- Total filtered -->
+          <tr id="rowFiltered" style="background:#fff9cc; font-weight:bold; color:#665500;">
+            <th colspan="9">TOTAL FILTERED (Hasil Pencarian)</th>
+            <th id="filterOmzet">Rp 0</th>
+            <th id="filterHPP">Rp 0</th>
+            <th id="filterProfit">Rp 0</th>
+            <th id="filterMargin">0 %</th>
+          </tr>
+          <!-- Total keseluruhan -->
+          <tr style="background:#d9fdd3; font-weight:bold; color:#004d00;">
+            <th colspan="9">TOTAL KESELURUHAN</th>
+            <th id="totalJual">Rp 0</th>
+            <th id="totalModal">Rp 0</th>
+            <th id="totalProfit">Rp 0</th>
+            <th id="totalMargin">0 %</th>
           </tr>
         </tfoot>
       </table>
     </div>
+
+    <!-- Modal Edit -->
+    <div id="editModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h3>Edit Data Penjualan</h3>
+        <form id="editForm">
+          <input type="hidden" id="editId">
+
+          <label>Jenis:</label>
+          <input type="text" id="editJenis"><br>
+
+          <label>Varian:</label>
+          <input type="text" id="editVarian"><br>
+
+          <label>Jumlah Box:</label>
+          <input type="number" id="editBox"><br>
+
+          <label>Jumlah Pcs:</label>
+          <input type="number" id="editPcs"><br>
+
+          <label>Harga per Box:</label>
+          <input type="number" id="editHargaBox"><br>
+
+          <!-- ✅ diperbaiki -->
+          <button type="button" onclick="simpanEditModal()">💾 Simpan</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- ✅ Navigasi halaman -->
+    <div id="pagination" style="margin-top:10px; text-align:center;"></div>
+
+    <!-- Ringkasan stok akhir -->
+    <div class="stok-summary">
+      🟡 Stok Akhir Jumbo: <span id="stokJumbo">0</span> pcs | 🔵 Stok Akhir Medium: <span id="stokMedium">0</span> pcs
+    </div>
+    <div class="stok-summary" style="margin-top: 6px;">
+      <p>💰 Modal tertanam di stok Jumbo: <span id="modalJumbo" class="modal-stok abu">Rp 0</span></p>
+      <p>💰 Modal tertanam di stok Medium: <span id="modalMedium" class="modal-stok abu">Rp 0</span></p>
+    </div>
+
+    <!-- Ringkasan Keuangan -->
+    <div class="card custom-shift" style="margin-top: 16px;">
+      <h3>📋 Ringkasan Keuangan</h3>
+      <table>
+        <tbody>
+          <tr><td>Omzet Kotor</td><td id="ringkasanOmzet">Rp 0</td></tr>
+          <tr><td>Total HPP / Modal</td><td id="ringkasanHPP">Rp 0</td></tr>
+          <tr><td>Profit Kotor</td><td id="ringkasanProfitKotor">Rp 0</td></tr>
+          <tr><td>Total Biaya Operasional</td><td id="ringkasanBiaya">Rp 0</td></tr>
+          <tr><td><strong>Profit Bersih Penjual</strong></td><td><strong id="ringkasanProfitBersih">Rp 0</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
-<script src="app.js">
+
+  <!-- 🧾 Catatan Pengeluaran -->
+  <div class="section">
+    <h3>🧾 Catatan Pengeluaran</h3>
+    <button onclick="togglePengeluaran()" class="toggle-btn">📂 Lihat / Sembunyikan Pengeluaran</button>
+
+    <div id="pengeluaranWrapper" style="display:none; margin-top:10px;">
+      <!-- Form input -->
+      <div style="margin-bottom:10px; display:flex; gap:8px; flex-wrap:wrap;">
+        <input type="text" id="descInput" placeholder="Deskripsi pengeluaran" style="flex:1 1 260px;">
+        <input type="number" id="amountInput" placeholder="Nominal (Rp)" style="flex:1 1 180px;">
+        <button style="flex:0 0 auto;" onclick="tambahPengeluaran()">➕ Tambah Pengeluaran</button>
+      </div>
+
+      <!-- Tabel pengeluaran -->
+      <div class="table-wrapper pengeluaran-scroll">
+        <table id="pengeluaranTable">
+          <thead>
+            <tr>
+              <th>Deskripsi</th>
+              <th>Nominal</th>
+              <th>Tanggal</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="pengeluaranBody"></tbody>
+          <tfoot>
+            <tr>
+              <td><strong>Total Pengeluaran</strong></td>
+              <td colspan="3"><strong id="totalPengeluaran">Rp 0</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Profit Bersih</strong></td>
+              <td colspan="3"><strong id="profitBersih">Rp 0</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Panggil app.js -->
+  <script src="app.js"></script>
+
+  <!-- ✅ Daftarkan service worker -->
+  <script>
     if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js")
-      .then(() => console.log("Service Worker terdaftar"))
-      .catch((err) => console.log("SW gagal:", err));
-  }
-</script>
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker terdaftar"))
+        .catch((err) => console.log("SW gagal:", err));
+    }
+  </script>
 </body>
 </html>

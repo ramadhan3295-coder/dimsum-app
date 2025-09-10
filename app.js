@@ -33,6 +33,7 @@ let stok = { jumbo:0, medium:0 };
 let currentPage = 1;
 const rowsPerPage = 15;
 let searchQuery = "";
+let pengeluaranData = [];   // ✅ tambahkan ini
 
 // ===== Varian & Input =====
 function populateVarian(jenis){
@@ -63,20 +64,27 @@ function hitungDariPcs(){
 function saveToLocalStorage() {
   localStorage.setItem("rekapData", JSON.stringify(rekapData));
   localStorage.setItem("stok", JSON.stringify(stok));
+  localStorage.setItem("pengeluaranData", JSON.stringify(pengeluaranData)); // ✅ simpan pengeluaran juga
 }
 
 function loadFromLocalStorage() {
   try {
     const rekap = localStorage.getItem("rekapData");
     const stokData = localStorage.getItem("stok");
+    const pengeluaran = localStorage.getItem("pengeluaranData");
+
     if (rekap) rekapData = JSON.parse(rekap);
     if (stokData) stok = JSON.parse(stokData);
+    if (pengeluaran) pengeluaranData = JSON.parse(pengeluaran);
+
     if (!Array.isArray(rekapData)) rekapData = [];
+    if (!Array.isArray(pengeluaranData)) pengeluaranData = [];
     if (typeof stok.jumbo!=="number") stok.jumbo = 0;
     if (typeof stok.medium!=="number") stok.medium = 0;
   } catch (e) {
     console.error("Gagal load data lokal:", e);
     rekapData = [];
+    pengeluaranData = [];
     stok = { jumbo:0, medium:0 };
   }
 }
@@ -89,17 +97,6 @@ function resetLocalStorage() {
   }
 }
 
-// ===== Pengeluaran =====
-function tambahPengeluaran() {
-  const tbody = document.getElementById("pengeluaranBody");
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td><input type="text" placeholder="Item baru" /></td>
-    <td><input type="number" value="0" oninput="hitungProfitBersih()" /></td>
-    <td><button onclick="hapusPengeluaran(this)">🗑️</button></td>
-  `;
-  tbody.appendChild(tr);
-}
 function hapusPengeluaran(btn) {
   btn.closest("tr").remove();
   hitungProfitBersih();
@@ -131,14 +128,10 @@ function simpanData(){
 
   const hasil = {
     id: generateId(),
-	tanggal: new Date().toLocaleString("id-ID", { 
-	year: "numeric", 
-	month: "2-digit", 
-	day: "2-digit", 
-	hour: "2-digit", 
-	minute: "2-digit", 
-	second: "2-digit" 
-	}),
+    tanggal: new Date().toLocaleString("id-ID", { 
+      year: "numeric", month: "2-digit", day: "2-digit", 
+      hour: "2-digit", minute: "2-digit", second: "2-digit" 
+    }),
     jenis, jenisStok,
     varianLabel: varian+" pcs",
     isiPerBox: isiBox[varian],
@@ -159,10 +152,8 @@ function simpanData(){
   document.getElementById("jenisProduk").value = "__placeholder";
   document.getElementById("varian").innerHTML = "";
 
-  rekapData.push(hasil);
-  saveToLocalStorage();
-  updateRekapTable();   // ⬅️ wajib biar tabel langsung update
-  updateSummary();      // ⬅️ biar ringkasan ikut update
+  updateRekapTable();
+  updateSummary();
 }
 
 function tambahStok(){
@@ -552,7 +543,7 @@ function loadPengeluaranFromLocalStorage() {
 }
 
 // ====== Pengeluaran ======
-function tambahPengeluaran() {
+function tambahPengeluaran() {   // ✅ versi baru dipakai
   const desc = document.getElementById("descInput").value.trim();
   const amount = parseInt(document.getElementById("amountInput").value);
   if (!desc || isNaN(amount) || amount<=0){alert("Isi pengeluaran dengan benar!");return;}
