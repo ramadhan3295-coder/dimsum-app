@@ -159,7 +159,10 @@ function simpanData(){
   document.getElementById("jenisProduk").value = "__placeholder";
   document.getElementById("varian").innerHTML = "";
 
-  updateRekapTable();
+  rekapData.push(hasil);
+  saveToLocalStorage();
+  updateRekapTable();   // ⬅️ wajib biar tabel langsung update
+  updateSummary();      // ⬅️ biar ringkasan ikut update
 }
 
 function tambahStok(){
