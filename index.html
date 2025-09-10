@@ -288,11 +288,12 @@ function hitungDariPcs(){
   document.getElementById("jumlahBox").value=Math.floor(pcs/isiBox[v]);
 }
 
-// ===== LocalStorage =====
-function saveToLocalStorage() {
-  localStorage.setItem("rekapData", JSON.stringify(rekapData));
-  localStorage.setItem("stok", JSON.stringify(stok));
-}
+// ====== Local Storage ======
+  function saveToLocalStorage() {
+    localStorage.setItem("rekapData", JSON.stringify(rekapData));
+    localStorage.setItem("stok", JSON.stringify(stok));
+    localStorage.setItem("pengeluaranData", JSON.stringify(pengeluaranData));
+  }
 
 function loadFromLocalStorage() {
   try {

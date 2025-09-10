@@ -29,8 +29,9 @@ const hppBox = {
 const modalPerPcs = { jumbo:1900, medium:1500 };
 
 // ===== State =====
-let rekapData = [];
-let stok = { jumbo:0, medium:0 };
+let rekapData = JSON.parse(localStorage.getItem("rekapData")) || [];
+let stok = JSON.parse(localStorage.getItem("stok")) || { jumbo:0, medium:0 };
+let pengeluaranData = JSON.parse(localStorage.getItem("pengeluaranData")) || [];
 let currentPage = 1;
 const rowsPerPage = 15;
 let searchQuery = "";
@@ -64,6 +65,7 @@ function hitungDariPcs(){
 function saveToLocalStorage() {
   localStorage.setItem("rekapData", JSON.stringify(rekapData));
   localStorage.setItem("stok", JSON.stringify(stok));
+  localStorage.setItem("pengeluaranData", JSON.stringify(pengeluaranData));
 }
 
 function loadFromLocalStorage() {
@@ -106,7 +108,7 @@ function hapusPengeluaran(btn) {
   hitungProfitBersih();
 }
 
-// ===== Transaksi =====
+// ======== CRUD Transaksi (Penjualan + Stok) ========
 function simpanData(){
   const jenis=document.getElementById("jenisProduk").value;
   if(!jenis || jenis==='__placeholder'){ alert("Silahkan pilih produk!"); return; }
@@ -119,7 +121,7 @@ function simpanData(){
   const jenisStok = (jenis.includes("medium")) ? "medium" : "jumbo";
 
   if(stok[jenisStok] <= 0){ alert("Stok "+jenisStok+" habis! Tambah stok dulu."); return; }
-  if(stok[jenisStok] < jumlahPcs){ alert("Stok "+jenisStok+" tidak cukup! Sisa: "+stok[jenisStok]+" pcs"); return; }
+  if(stok[jenisStok] < jumlahPcs){ alert("Stok "+jenisStok+" tidak cukup!"); return; }
 
   stok[jenisStok] -= jumlahPcs;
 
@@ -128,38 +130,19 @@ function simpanData(){
   const omzet   = jumlahBox * hargaPerBox;
   const hppTot  = jumlahBox * hppPerBox;
   const profit  = omzet - hppTot;
-  const marginStr = hppTot>0 ? ((profit/hppTot)*100).toFixed(1)+"%" : "0%";
 
   const hasil = {
     id: generateId(),
-	tanggal: new Date().toLocaleString("id-ID", { 
-	year: "numeric", 
-	month: "2-digit", 
-	day: "2-digit", 
-	hour: "2-digit", 
-	minute: "2-digit", 
-	second: "2-digit" 
-	}),
+    tanggal: new Date().toLocaleString("id-ID"),
     jenis, jenisStok,
     varianLabel: varian+" pcs",
-    isiPerBox: isiBox[varian],
     jumlahBox, jumlahPcs,
     sisaStok: stok[jenisStok],
-    hargaPerBox,
-    totalOmzet: omzet,
-    totalHPP: hppTot,
-    profit,
-    marginStr
+    hargaPerBox, totalOmzet: omzet, totalHPP: hppTot, profit,
+    marginStr: hppTot>0 ? ((profit/hppTot)*100).toFixed(1)+"%" : "0%"
   };
   rekapData.push(hasil);
   saveToLocalStorage();
-
-  // Reset input
-  document.getElementById("jumlahBox").value = 0;
-  document.getElementById("jumlahPcs").value = 0;
-  document.getElementById("jenisProduk").value = "__placeholder";
-  document.getElementById("varian").innerHTML = "";
-
   updateRekapTable();
 }
 
@@ -410,25 +393,21 @@ function updateRekapTable() {
 }
 
 
-// ===== Edit Baris =====
+// ======== Edit Data (Inline + Modal) ========
+// Inline
 function editBaris(id) {
   const idx = rekapData.findIndex(r => r.id === id);
   if (idx === -1) return;
-
   const row = rekapData[idx];
   const tr = [...document.querySelectorAll("#rekapTable tbody tr")].find(r => 
     r.querySelector("td:last-child button")?.getAttribute("onclick")?.includes(id)
   );
   if (!tr) return;
-
-  // Ganti kolom jumlahBox & jumlahPcs jadi input
   tr.cells[6].innerHTML = `<input type="number" value="${row.jumlahBox}" style="width:70px">`;
   tr.cells[7].innerHTML = `<input type="number" value="${row.jumlahPcs}" style="width:70px">`;
-
   tr.cells[14].innerHTML = `
-  <button type="button" class="btn-aksi simpan" onclick="simpanEdit('${id}', this)" title="Simpan">💾</button>
-  <button type="button" class="btn-aksi batal" onclick="updateRekapTable()" title="Batal">❌</button>
-`;
+    <button type="button" onclick="simpanEditInline('${id}', this)">💾</button>
+    <button type="button" onclick="updateRekapTable()">❌</button>`;
 }
 
 function simpanEdit(id, btn) {
@@ -471,6 +450,7 @@ function simpanEdit(id, btn) {
   updateRekapTable();
 }
 
+// Modal
 function editRow(id){
   const row = rekapData.find(r => r.id === id);
   if (!row) return;
@@ -1078,7 +1058,7 @@ function updateRekapTable() {
 }
 
 
-// ===== Edit Baris =====
+// ===== Edit Baris (Inline di Tabel) =====
 function editBaris(id) {
   const idx = rekapData.findIndex(r => r.id === id);
   if (idx === -1) return;
@@ -1094,12 +1074,12 @@ function editBaris(id) {
   tr.cells[7].innerHTML = `<input type="number" value="${row.jumlahPcs}" style="width:70px">`;
 
   tr.cells[14].innerHTML = `
-  <button type="button" class="btn-aksi simpan" onclick="simpanEdit('${id}', this)" title="Simpan">💾</button>
-  <button type="button" class="btn-aksi batal" onclick="updateRekapTable()" title="Batal">❌</button>
-`;
+    <button type="button" class="btn-aksi simpan" onclick="simpanEditInline('${id}', this)" title="Simpan">💾</button>
+    <button type="button" class="btn-aksi batal" onclick="updateRekapTable()" title="Batal">❌</button>
+  `;
 }
 
-function simpanEdit(id, btn) {
+function simpanEditInline(id, btn) {
   const idx = rekapData.findIndex(r => r.id === id);
   if (idx === -1) return;
 
@@ -1112,14 +1092,14 @@ function simpanEdit(id, btn) {
   // hitung selisih stok
   const selisih = newPcs - (row.jumlahPcs || 0);
   if (row.jenis !== "Tambah Stok") {
-    stok[row.jenisStok] -= selisih;  // pcs nambah -> stok berkurang
+    stok[row.jenisStok] -= selisih;
     if (stok[row.jenisStok] < 0) {
       alert("Stok tidak cukup untuk perubahan ini!");
       stok[row.jenisStok] += selisih; // rollback
       return;
     }
   } else {
-    stok[row.jenisStok] += selisih;  // kalau stok masuk diubah
+    stok[row.jenisStok] += selisih;
   }
 
   // hitung ulang omzet, hpp, profit, margin
@@ -1139,6 +1119,7 @@ function simpanEdit(id, btn) {
   updateRekapTable();
 }
 
+// ===== Edit via Modal =====
 function editRow(id){
   const row = rekapData.find(r => r.id === id);
   if (!row) return;
@@ -1154,7 +1135,8 @@ function editRow(id){
 function closeEditModal(){
   document.getElementById("editModal").style.display = "none";
 }
-function simpanEdit(){
+
+function simpanEditModal(){
   const id = document.getElementById("editId").value;
   const row = rekapData.find(r => r.id === id);
   if (!row) return;
@@ -1215,115 +1197,63 @@ function loadPengeluaranFromLocalStorage() {
   } catch(e) { console.error("Gagal load pengeluaran:", e); }
 }
 
+// ====== Pengeluaran ======
 function tambahPengeluaran() {
-  const descEl = document.getElementById("descInput");
-  const amountEl = document.getElementById("amountInput");
-  const desc = descEl.value.trim();
-  const amount = parseFloat(amountEl.value);
-  if (!desc || isNaN(amount) || amount <= 0) { alert("Masukkan deskripsi dan nominal yang valid!"); return; }
-
-  const tbody = document.getElementById("pengeluaranBody");
-  const tr = document.createElement("tr");
-  tr.dataset.tanggal = new Date().toLocaleDateString("id-ID");
-  tr.innerHTML = `
-    <td><input type="text" value="${desc}" oninput="savePengeluaranToLocalStorage();hitungProfitBersih()" /></td>
-    <td><input type="number" value="${amount}" oninput="savePengeluaranToLocalStorage();hitungProfitBersih()" /></td>
-    <td>${tr.dataset.tanggal}</td>
-    <td><button onclick="hapusPengeluaran(this)">🗑️</button></td>`;
-  tbody.appendChild(tr);
-
-  // reset input
-  descEl.value = ""; amountEl.value = "";
-
-  savePengeluaranToLocalStorage();
-  hitungProfitBersih();
+  const desc = document.getElementById("descInput").value.trim();
+  const amount = parseInt(document.getElementById("amountInput").value);
+  if (!desc || isNaN(amount) || amount<=0){alert("Isi pengeluaran dengan benar!");return;}
+  pengeluaranData.push({id:generateId(), item:desc, biaya:amount, tanggal:new Date().toLocaleDateString("id-ID")});
+  saveToLocalStorage();
+  renderPengeluaran();
+  updateSummary();
+  document.getElementById("descInput").value="";
+  document.getElementById("amountInput").value="";
 }
 
-function hapusPengeluaran(btn) {
-  btn.closest("tr").remove();
-  savePengeluaranToLocalStorage();
-  hitungProfitBersih();
+function renderPengeluaran(){
+  const tbody=document.getElementById("pengeluaranBody");
+  tbody.innerHTML="";
+  pengeluaranData.forEach(p=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${p.item}</td><td>${formatRp(p.biaya)}</td><td>${p.tanggal}</td>
+    <td><button onclick="hapusPengeluaran('${p.id}')">❌</button></td>`;
+    tbody.appendChild(tr);
+  });
 }
 
-// ===== Export Excel (Rekap + Pengeluaran + Total) =====
-function downloadExcel() {
+function hapusPengeluaran(id){
+  pengeluaranData= pengeluaranData.filter(p=>p.id!==id);
+  saveToLocalStorage();
+  renderPengeluaran();
+  updateSummary();
+}
+
+// ====== Export Excel ======
+function downloadExcel(){
   const wb = XLSX.utils.book_new();
-
-  // ========== Sheet Rekap ==========
-  const wsData = [
-    ["No","Tanggal","Jenis","Jenis Stok","Varian","Box","Pcs","Sisa Stok",
-     "Harga/Box","Omzet","HPP","Profit","Margin"]
-  ];
-  let totalOmzet = 0, totalHPP = 0, totalProfit = 0;
-  rekapData.forEach((r,i)=>{
-    wsData.push([
-      i+1, r.tanggal, r.jenis, r.jenisStok, r.varianLabel,
-      r.jumlahBox, r.jumlahPcs, r.sisaStok,
-      r.hargaPerBox, r.totalOmzet, r.totalHPP, r.profit, r.marginStr
-    ]);
-    totalOmzet  += r.totalOmzet;
-    totalHPP    += r.totalHPP;
-    totalProfit += r.profit;
-  });
-
-  // Tambah baris total
-  wsData.push([
-    "", "", "", "", "TOTAL",
-    "", "", "",
-    "", totalOmzet, totalHPP, totalProfit, ""
-  ]);
-
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-  // Format angka ribuan untuk kolom angka
-  const range = XLSX.utils.decode_range(ws['!ref']);
-  for (let R = 1; R <= range.e.r; ++R) {
-    for (let C = 5; C <= 12; ++C) { // kolom Box sampai Profit
-      const cell = ws[XLSX.utils.encode_cell({r:R, c:C})];
-      if (cell && typeof cell.v === "number") {
-        cell.t = "n";
-        cell.z = "#,##0"; // format ribuan
-      }
-    }
-  }
-  XLSX.utils.book_append_sheet(wb, ws, "Rekap Penjualan");
-
-  // ========== Sheet Pengeluaran ==========
-  const pengeluaran = JSON.parse(localStorage.getItem("pengeluaranData")||"[]");
-  const wsPengeluaran = [
-    ["No","Tanggal","Item","Biaya"]
-  ];
-  let totalPengeluaran = 0;
-  pengeluaran.forEach((p,i)=>{
-    wsPengeluaran.push([i+1, p.tanggal, p.item, p.biaya]);
-    totalPengeluaran += p.biaya;
-  });
-
-  // Tambah baris total
-  wsPengeluaran.push(["", "", "TOTAL", totalPengeluaran]);
-
-  const ws2 = XLSX.utils.aoa_to_sheet(wsPengeluaran);
-
-  // Format angka ribuan untuk biaya
-  const range2 = XLSX.utils.decode_range(ws2['!ref']);
-  for (let R = 1; R <= range2.e.r; ++R) {
-    const cell = ws2[XLSX.utils.encode_cell({r:R, c:3})]; // kolom Biaya
-    if (cell && typeof cell.v === "number") {
-      cell.t = "n";
-      cell.z = "#,##0";
-    }
-  }
-  XLSX.utils.book_append_sheet(wb, ws2, "Pengeluaran");
-
-  // ========== Nama file otomatis ==========
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const dd = String(today.getDate()).padStart(2, '0');
-  const fileName = `Rekap_Penjualan_Dimsum_${yyyy}-${mm}-${dd}.xlsx`;
-
-  XLSX.writeFile(wb, fileName);
+  // Rekap
+  const wsData=[["No","Tanggal","Jenis","Varian","Box","Pcs","Harga/Box","Omzet","HPP","Profit","Margin"]];
+  rekapData.forEach((r,i)=>wsData.push([i+1,r.tanggal,r.jenis,r.varianLabel,r.jumlahBox,r.jumlahPcs,r.hargaPerBox,r.totalOmzet,r.totalHPP,r.profit,r.marginStr]));
+  const ws=XLSX.utils.aoa_to_sheet(wsData);XLSX.utils.book_append_sheet(wb,ws,"Rekap Penjualan");
+  // Pengeluaran
+  const wsPeng=[["No","Tanggal","Item","Biaya"]];
+  pengeluaranData.forEach((p,i)=>wsPeng.push([i+1,p.tanggal,p.item,p.biaya]));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(wsPeng),"Pengeluaran");
+  // Summary
+  const totalOmzet=rekapData.reduce((a,r)=>a+r.totalOmzet,0);
+  const totalHPP=rekapData.reduce((a,r)=>a+r.totalHPP,0);
+  const profit=totalOmzet-totalHPP;
+  const totalPeng= pengeluaranData.reduce((a,p)=>a+p.biaya,0);
+  const bersih= profit-totalPeng;
+  const wsSum=[["Ringkasan"],["Omzet",totalOmzet],["HPP",totalHPP],["Profit Kotor",profit],["Pengeluaran",totalPeng],["Profit Bersih",bersih]];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(wsSum),"Summary");
+  XLSX.writeFile(wb,"Rekap_Penjualan_Dimsum.xlsx");
 }
+
+// ===== Init =====
+renderPengeluaran();
+updateSummary();
+updateRekapTable();
 
 // ===== Inisialisasi =====
 window.onload = function() {

@@ -1,4 +1,4 @@
-* {
+  * {
     box-sizing: border-box;
   }
 
@@ -362,10 +362,6 @@ td.aksi-cell {
 .modal-stok.abu {
   color: #666;
 }
-
-
-=======
-<style>
 
   * {
     box-sizing: border-box;
