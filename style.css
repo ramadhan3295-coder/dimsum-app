@@ -362,24 +362,3 @@ td.aksi-cell {
 .modal-stok.abu {
   color: #666;
 }
-
-.exit-btn {
-  margin-top: 20px;
-  padding: 12px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background: #ff5252;
-  color: white;
-  cursor: pointer;
-}
-
-.exit-btn:hover {
-  background: #e04848;
-}
-
-#status {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #333;
-}
