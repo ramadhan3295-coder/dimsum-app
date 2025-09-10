@@ -563,12 +563,20 @@ function renderPengeluaran(){
   pengeluaranData.forEach(p=>{
     totalPengeluaran += p.biaya;
     const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${p.item}</td><td>${formatRp(p.biaya)}</td><td>${p.tanggal}</td>
-    <td><button onclick="hapusPengeluaran('${p.id}')">❌</button></td>`;
+    tr.innerHTML=`<td>${p.item}</td>
+                  <td>${formatRp(p.biaya)}</td>
+                  <td>${p.tanggal}</td>
+                  <td><button onclick="hapusPengeluaran('${p.id}')">❌</button></td>`;
     tbody.appendChild(tr);
   });
 
+  // Update total di tabel pengeluaran
   document.getElementById("totalPengeluaran").textContent = formatRp(totalPengeluaran);
+
+  // Update profit bersih di tabel pengeluaran (profit kotor - pengeluaran)
+  let totalProfitKotor = rekapData.reduce((sum, r) => sum + r.profit, 0);
+  let profitBersih = totalProfitKotor - totalPengeluaran;
+  document.getElementById("profitBersih").textContent = formatRp(profitBersih);
 }
 
 function hapusPengeluaran(id){
@@ -590,19 +598,15 @@ function updateSummary() {
   // Hitung total pengeluaran
   let totalPengeluaran = pengeluaranData.reduce((sum,p)=> sum+p.biaya, 0);
 
-  // Profit bersih = profit kotor - pengeluaran
+  // Profit bersih = profit kotor - total pengeluaran
   let profitBersih = totalProfit - totalPengeluaran;
 
-  // Update ringkasan
+  // Update ringkasan keuangan
   document.getElementById("ringkasanOmzet").textContent = formatRp(totalOmzet);
   document.getElementById("ringkasanHPP").textContent = formatRp(totalHPP);
   document.getElementById("ringkasanProfitKotor").textContent = formatRp(totalProfit);
-  document.getElementById("ringkasanBiaya").textContent = formatRp(totalPengeluaran);
-  document.getElementById("ringkasanProfitBersih").textContent = formatRp(profitBersih);
-
-  // Update tabel pengeluaran footer
-  document.getElementById("totalPengeluaran").textContent = formatRp(totalPengeluaran);
-  document.getElementById("profitBersih").textContent = formatRp(profitBersih);
+  document.getElementById("ringkasanBiaya").textContent = formatRp(totalPengeluaran);   // ✅ sekarang muncul
+  document.getElementById("ringkasanProfitBersih").textContent = formatRp(profitBersih); // ✅ sekarang otomatis
 }
 
 // ====== Export Excel ======
