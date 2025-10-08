@@ -104,6 +104,11 @@ function hapusPengeluaran(btn) {
 
 // ===== Transaksi =====
 function simpanData(){
+  const jenisPembeli = document.getElementById("jenisPembeli").value;
+  const jenisPaket   = document.getElementById("jenisPaket").value;
+  if(!jenisPembeli || jenisPembeli==='__placeholder'){ alert("Silahkan pilih jenis pembeli!"); return; }
+  if(!jenisPaket || jenisPaket==='__placeholder'){ alert("Silahkan pilih jenis paket!"); return; }
+
   const jenis=document.getElementById("jenisProduk").value;
   if(!jenis || jenis==='__placeholder'){ alert("Silahkan pilih produk!"); return; }
   const varian=parseInt(document.getElementById("varian").value)||0;
@@ -132,6 +137,7 @@ function simpanData(){
       year: "numeric", month: "2-digit", day: "2-digit", 
       hour: "2-digit", minute: "2-digit", second: "2-digit" 
     }),
+    jenisPembeli, jenisPaket,  // ✅ simpan
     jenis, jenisStok,
     varianLabel: varian+" pcs",
     isiPerBox: isiBox[varian],
@@ -320,6 +326,8 @@ function updateRekapTable() {
     tr.innerHTML = `
       <td>${start + index + 1}</td>
       <td>${row.tanggal}</td>
+      <td>${row.jenisPembeli || '-'}</td>
+      <td>${row.jenisPaket || '-'}</td>
       <td>${row.jenis}</td>
       <td>${row.jenisStok}</td>
       <td>${row.varianLabel || "-"}</td>
@@ -612,14 +620,16 @@ function updateSummary() {
 // ====== Export Excel ======
 function downloadExcel() {
   // ===== Sheet 1: Rekap Penjualan =====
-  const dataRekap = [
-    ["No","Tanggal","Jenis","Varian","Box","Pcs","Harga/Box","Omzet","HPP","Profit","Margin"]
-  ];
+const dataRekap = [
+  ["No","Tanggal","Jenis Pembeli","Jenis Paket","Jenis","Varian","Box","Pcs","Harga/Box","Omzet","HPP","Profit","Margin"]
+];
   let totalOmzet=0, totalHPP=0, totalProfit=0;
   rekapData.forEach((r,i)=>{
     dataRekap.push([
       i+1,
       r.tanggal,
+      r.jenisPembeli || "-",
+      r.jenisPaket || "-",
       r.jenis,
       r.varianLabel,
       r.jumlahBox,

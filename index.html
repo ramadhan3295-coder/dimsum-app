@@ -52,6 +52,22 @@
         </select>
       </div>
       <div>
+    <label for="jenisPembeli">Jenis Pembeli</label>
+    <select id="jenisPembeli">
+      <option value="__placeholder" disabled selected>--Pilih Jenis Pembeli--</option>
+      <option value="enduser">End User / Pelanggan</option>
+      <option value="reseller">Reseller</option>
+    </select>
+  </div>
+  <div>
+    <label for="jenisPaket">Jenis Paket</label>
+    <select id="jenisPaket">
+      <option value="__placeholder" disabled selected>--Pilih Jenis Paket--</option>
+      <option value="eceran">Eceran</option>
+      <option value="pack">Per Pack</option>
+    </select>
+  </div>
+      <div>
         <label for="varian">Varian Box</label>
         <select id="varian" onchange="onVarianChange()"></select>
       </div>
@@ -90,11 +106,13 @@
       <table id="rekapTable">
         <thead>
           <tr>
-            <th>No</th><th>Tanggal</th><th>Jenis</th><th>Jenis Stok</th><th>Varian</th>
+            <th>No</th><th>Tanggal</th><th>Pembeli</th><th>Paket</th>
+            <th>Jenis</th><th>Jenis Stok</th><th>Varian</th>
             <th>Box</th><th>Pcs</th><th>Sisa Stok</th>
-            <th>Harga jual / <br>Box</th><th>Total Omzet <br>kotor</th>
-            <th>Total HPP / <br>Modal usaha</th><th>Profit</th><th>Margin</th><th>Aksi</th>
+            <th>Harga jual / Box</th><th>Total Omzet</th>
+            <th>Total HPP</th><th>Profit</th><th>Margin</th><th>Aksi</th>
           </tr>
+
         </thead>
         <tbody></tbody>
         <tfoot>
