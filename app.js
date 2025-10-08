@@ -69,13 +69,13 @@ function populateVarian(jenis) {
 
   let keys = [];
 
-  // 🔸 khusus produk jumbo/medium frozen
+  // 🔸 Khusus produk frozen → ikuti jenis pembeli & paket
   if ((jenis === "jumbofrozen" || jenis === "mediumfrozen") &&
       pembeli && paket && pembeli !== '__placeholder' && paket !== '__placeholder') {
-
     keys = varianPembeli[pembeli]?.[jenis]?.[paket] || [];
-  } else {
-    // 🔸 produk lainnya (mentai, original, dll) — pakai semua varian hargaBox
+  } 
+  // 🔸 Produk lain (mentai/original) → tampil semua varian
+  else {
     keys = Object.keys(hargaBox[jenis]);
   }
 
@@ -163,6 +163,20 @@ function simpanData() {
   if (!jenis || jenis === "__placeholder") { 
     alert("Silahkan pilih produk!"); 
     return; 
+  }
+
+  // hanya wajib pilih pembeli & paket untuk produk frozen
+  if (jenis === "jumbofrozen" || jenis === "mediumfrozen") {
+    const pembeli = document.getElementById("jenisPembeli").value;
+    const paket = document.getElementById("jenisPaket").value;
+    if (!pembeli || pembeli === "__placeholder") { 
+      alert("Silahkan pilih jenis pembeli!"); 
+      return; 
+    }
+    if (!paket || paket === "__placeholder") { 
+      alert("Silahkan pilih jenis paket!"); 
+      return; 
+    }
   }
 
   const varian = parseInt(document.getElementById("varian").value) || 0;
