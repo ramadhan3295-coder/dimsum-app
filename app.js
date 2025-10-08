@@ -29,190 +29,11 @@ const modalPerPcs = { jumbo:1900, medium:1500 };
 
 // ===== State =====
 let rekapData = [];
-let stok = { Jumbo: 0, Medium: 0 };
-const el = id => document.getElementById(id);
-
-const stokJenis = el('stokJenis');
-const stokJumlah = el('stokJumlah');
-const btnTambahStok = el('btnTambahStok');
-const stokJumbo = el('stokJumbo');
-const stokMedium = el('stokMedium');
-
-const jenisProduk = el('jenisProduk');
-const jenisPembeli = el('jenisPembeli');
-const jenisPenjualan = el('jenisPenjualan');
-const varianBox = el('varianBox');
-const jumlahBox = el('jumlahBox');
-
-const hargaPabrikEl = el('hargaPabrik');
-const totalBeliEl = el('totalBeli');
-const hargaJualPackEl = el('hargaJualPack');
-const profitPerPackEl = el('profitPerPack');
-const hargaPerPcsEl = el('hargaPerPcs');
-const profitTotalEl = el('profitTotal');
-
-const btnSimpan = el('btnSimpan');
-
-const tableBody = document.querySelector('#tableRekap tbody');
-const totalTransaksiEl = el('totalTransaksi');
-const totalPcsTerjualEl = el('totalPcsTerjual');
-const totalProfitEl = el('totalProfit');
-const btnClear = el('btnClear');
-
-// ----- utilities -----
-function formatRp(n){
-  if (n === null || n === undefined) return '-';
-  return new Intl.NumberFormat('id-ID').format(n);
-}
-
-// ----- load/save rekap to localStorage -----
-function getRekap(){
-  const raw = localStorage.getItem('dimsum_rekap_v1');
-  return raw ? JSON.parse(raw) : [];
-}
-function saveRekap(arr){
-  localStorage.setItem('dimsum_rekap_v1', JSON.stringify(arr));
-}
-
-// ----- update stok display -----
-function updateStokUI(){
-  stokJumbo.textContent = stok.Jumbo;
-  stokMedium.textContent = stok.Medium;
-}
-
-// ----- fill varianBox based on selections -----
-function populateVarian(){
-  const p = jenisProduk.value;
-  const pemb = jenisPembeli.value;
-  const jenis = jenisPenjualan.value;
-  varianBox.innerHTML = '';
-  const list = (prices[p] && prices[p][pemb] && prices[p][pemb][jenis]) || [];
-  list.forEach(v=>{
-    const opt = document.createElement('option');
-    opt.value = v.pcs;
-    opt.textContent = `${v.pcs} pcs`;
-    varianBox.appendChild(opt);
-  });
-  if(list.length===0){
-    varianBox.innerHTML = '<option value="">-</option>';
-  }
-  updatePricePreview();
-}
-
-// ----- get selected price object -----
-function getSelectedVariant(){
-  const p = jenisProduk.value;
-  const pemb = jenisPembeli.value;
-  const jenis = jenisPenjualan.value;
-  const pcs = parseInt(varianBox.value) || 0;
-  const list = (prices[p] && prices[p][pemb] && prices[p][pemb][jenis]) || [];
-  return list.find(x=>x.pcs === pcs) || null;
-}
-
-// ----- update price preview UI -----
-function updatePricePreview(){
-  const variant = getSelectedVariant();
-  if(!variant){
-    hargaPabrikEl.textContent = '-';
-    totalBeliEl.textContent = '-';
-    hargaJualPackEl.textContent = '-';
-    profitPerPackEl.textContent = '-';
-    hargaPerPcsEl.textContent = '-';
-    profitTotalEl.textContent = '-';
-    return;
-  }
-  const boxCount = Math.max(1, parseInt(jumlahBox.value) || 1);
-  const pcsPerBox = variant.pcs;
-  const hargaPabrikPerPcs = variant.hargaPabrikPerPcs;
-  hargaPabrikEl.textContent = `Rp ${formatRp(hargaPabrikPerPcs)}`;
-  totalBeliEl.textContent = `Rp ${formatRp(variant.totalBeli)}`;
-  hargaJualPackEl.textContent = `Rp ${formatRp(variant.hargaJualPack)}`;
-  profitPerPackEl.textContent = `Rp ${formatRp(variant.profitPerPack)}`;
-  hargaPerPcsEl.textContent = `Rp ${formatRp(variant.hargaPerPcs)}`;
-  profitTotalEl.textContent = `Rp ${formatRp(variant.profitPerPack * boxCount)}`;
-}
-
-// ----- save transaksi -----
-btnSimpan.addEventListener('click', ()=>{
-  const varian = getSelectedVariant();
-  if(!varian){ alert('Pilih varian yang tersedia.'); return; }
-  const boxCount = Math.max(1, parseInt(jumlahBox.value) || 1);
-  const totalPcs = boxCount * varian.pcs;
-  const produk = jenisProduk.value;
-  // cek stok cukup
-  if(stok[produk] < totalPcs){
-    if(!confirm(`Stok ${produk} saat ini ${stok[produk]} pcs. Terjual ${totalPcs} pcs. Lanjutkan dan stok akan jadi negatif?`)){
-      return;
-    }
-  }
-
-// update stok
-  stok[produk] -= totalPcs;
-  updateStokUI();
-
-  const now = new Date().toLocaleString();
-  const rek = getRekap();
-  const transaksi = {
-    tanggal: now,
-    produk,
-    pembeli: jenisPembeli.value,
-    jenisPenjualan: jenisPenjualan.value,
-    pcsPerBox: varian.pcs,
-    boxCount,
-    pcsTerjual: totalPcs,
-    hargaJualPack: varian.hargaJualPack,
-    profitPerPack: varian.profitPerPack,
-    profitTotal: varian.profitPerPack * boxCount
-  };
-  rek.push(transaksi);
-  saveRekap(rek);
-  renderRekap();
-  alert('Transaksi tersimpan ke rekap.');
-});
-
-// ----- render rekap table & totals -----
-function renderRekap(){
-  const arr = getRekap();
-  tableBody.innerHTML = '';
-  let totalProfit = 0;
-  let totalPcs = 0;
-  arr.forEach((t,i)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${i+1}</td>
-      <td>${t.tanggal}</td>
-      <td>${t.produk}</td>
-      <td>${t.pembeli}</td>
-      <td>${t.jenisPenjualan}</td>
-      <td>${t.pcsPerBox}</td>
-      <td>${t.boxCount}</td>
-      <td>${t.pcsTerjual}</td>
-      <td>Rp ${formatRp(t.hargaJualPack)}</td>
-      <td>Rp ${formatRp(t.profitTotal)}</td>
-    `;
-    tableBody.appendChild(tr);
-    totalProfit += t.profitTotal;
-    totalPcs += t.pcsTerjual;
-  });
-  totalTransaksiEl.textContent = arr.length;
-  totalPcsTerjualEl.textContent = totalPcs;
-  totalProfitEl.textContent = formatRp(totalProfit);
-}
-
-btnClear.addEventListener('click', ()=>{
-  if(!confirm('Yakin hapus semua rekap?')) return;
-  localStorage.removeItem('dimsum_rekap_v1');
-  renderRekap();
-  alert('Semua rekap dihapus.');
-});
-
-// ----- init -----
-function init(){
-  updateStokUI();
-  populateVarian();
-  renderRekap();
-}
-init();
+let stok = { jumbo:0, medium:0 };
+let currentPage = 1;
+const rowsPerPage = 15;
+let searchQuery = "";
+let pengeluaranData = [];   // ✅ tambahkan ini
 
 // ===== Varian & Input =====
 function populateVarian(jenis){
@@ -283,11 +104,6 @@ function hapusPengeluaran(btn) {
 
 // ===== Transaksi =====
 function simpanData(){
-  const jenisPembeli = document.getElementById("jenisPembeli").value;
-  const jenisPaket   = document.getElementById("jenisPaket").value;
-  if(!jenisPembeli || jenisPembeli==='__placeholder'){ alert("Silahkan pilih jenis pembeli!"); return; }
-  if(!jenisPaket || jenisPaket==='__placeholder'){ alert("Silahkan pilih jenis paket!"); return; }
-
   const jenis=document.getElementById("jenisProduk").value;
   if(!jenis || jenis==='__placeholder'){ alert("Silahkan pilih produk!"); return; }
   const varian=parseInt(document.getElementById("varian").value)||0;
@@ -316,7 +132,6 @@ function simpanData(){
       year: "numeric", month: "2-digit", day: "2-digit", 
       hour: "2-digit", minute: "2-digit", second: "2-digit" 
     }),
-    jenisPembeli, jenisPaket,  // ✅ simpan
     jenis, jenisStok,
     varianLabel: varian+" pcs",
     isiPerBox: isiBox[varian],
@@ -505,8 +320,6 @@ function updateRekapTable() {
     tr.innerHTML = `
       <td>${start + index + 1}</td>
       <td>${row.tanggal}</td>
-      <td>${row.jenisPembeli || '-'}</td>
-      <td>${row.jenisPaket || '-'}</td>
       <td>${row.jenis}</td>
       <td>${row.jenisStok}</td>
       <td>${row.varianLabel || "-"}</td>
@@ -799,16 +612,14 @@ function updateSummary() {
 // ====== Export Excel ======
 function downloadExcel() {
   // ===== Sheet 1: Rekap Penjualan =====
-const dataRekap = [
-  ["No","Tanggal","Jenis Pembeli","Jenis Paket","Jenis","Varian","Box","Pcs","Harga/Box","Omzet","HPP","Profit","Margin"]
-];
+  const dataRekap = [
+    ["No","Tanggal","Jenis","Varian","Box","Pcs","Harga/Box","Omzet","HPP","Profit","Margin"]
+  ];
   let totalOmzet=0, totalHPP=0, totalProfit=0;
   rekapData.forEach((r,i)=>{
     dataRekap.push([
       i+1,
       r.tanggal,
-      r.jenisPembeli || "-",
-      r.jenisPaket || "-",
       r.jenis,
       r.varianLabel,
       r.jumlahBox,
@@ -887,88 +698,3 @@ window.onload = function() {
   updateRekapTable();
   hitungProfitBersih();
 };
-
-// script.js
-// Mapping harga berdasarkan tabel gambar yang diberikan
-// Struktur: prices[produk][jenisPembeli][jenisPenjualan] = array of variant objects {pcs, hargaPabrikPerPcs, totalBeli, hargaJualPack, profitPerPack, hargaPerPcs}
-const prices = {
-  Jumbo: {
-    EndUser: {
-      Eceran: [
-        {pcs:4, hargaPabrikPerPcs:1800, totalBeli:7200, hargaJualPack:10000, profitPerPack:2800, hargaPerPcs:2500},
-        {pcs:6, hargaPabrikPerPcs:1800, totalBeli:10800, hargaJualPack:15000, profitPerPack:4200, hargaPerPcs:2500},
-        {pcs:8, hargaPabrikPerPcs:1800, totalBeli:14400, hargaJualPack:20000, profitPerPack:5600, hargaPerPcs:2500},
-        {pcs:10, hargaPabrikPerPcs:1800, totalBeli:18000, hargaJualPack:25000, profitPerPack:7000, hargaPerPcs:2500},
-      ],
-      PerPack: [
-        {pcs:50, hargaPabrikPerPcs:1800, totalBeli:90000, hargaJualPack:115000, profitPerPack:25000, hargaPerPcs:2300},
-        {pcs:100, hargaPabrikPerPcs:1800, totalBeli:180000, hargaJualPack:230000, profitPerPack:50000, hargaPerPcs:2300},
-        {pcs:200, hargaPabrikPerPcs:1800, totalBeli:360000, hargaJualPack:440000, profitPerPack:80000, hargaPerPcs:2200},
-        {pcs:300, hargaPabrikPerPcs:1800, totalBeli:540000, hargaJualPack:660000, profitPerPack:120000, hargaPerPcs:2200},
-        {pcs:500, hargaPabrikPerPcs:1800, totalBeli:900000, hargaJualPack:1050000, profitPerPack:150000, hargaPerPcs:2100},
-        {pcs:1000, hargaPabrikPerPcs:1800, totalBeli:1800000, hargaJualPack:2100000, profitPerPack:300000, hargaPerPcs:2100},
-      ]
-    },
-    Reseller: {
-      Eceran: [
-        {pcs:4, hargaPabrikPerPcs:1800, totalBeli:7200, hargaJualPack:8000, profitPerPack:800, hargaPerPcs:2000},
-        {pcs:6, hargaPabrikPerPcs:1800, totalBeli:10800, hargaJualPack:12000, profitPerPack:1200, hargaPerPcs:2000},
-        {pcs:8, hargaPabrikPerPcs:1800, totalBeli:14400, hargaJualPack:16000, profitPerPack:1600, hargaPerPcs:2000},
-        {pcs:10, hargaPabrikPerPcs:1800, totalBeli:18000, hargaJualPack:20000, profitPerPack:2000, hargaPerPcs:2000},
-      ],
-      PerPack: [
-        {pcs:50, hargaPabrikPerPcs:1800, totalBeli:90000, hargaJualPack:105000, profitPerPack:15000, hargaPerPcs:2100},
-        {pcs:100, hargaPabrikPerPcs:1800, totalBeli:180000, hargaJualPack:210000, profitPerPack:30000, hargaPerPcs:2100},
-        {pcs:200, hargaPabrikPerPcs:1800, totalBeli:360000, hargaJualPack:400000, profitPerPack:40000, hargaPerPcs:2000},
-        {pcs:300, hargaPabrikPerPcs:1800, totalBeli:540000, hargaJualPack:600000, profitPerPack:60000, hargaPerPcs:2000},
-        {pcs:500, hargaPabrikPerPcs:1800, totalBeli:900000, hargaJualPack:950000, profitPerPack:50000, hargaPerPcs:1900},
-        {pcs:1000, hargaPabrikPerPcs:1800, totalBeli:1800000, hargaJualPack:1900000, profitPerPack:100000, hargaPerPcs:1900},
-      ]
-    }
-  },
-
-  Medium: {
-    EndUser: {
-      Eceran: [
-        {pcs:5, hargaPabrikPerPcs:1500, totalBeli:7500, hargaJualPack:11500, profitPerPack:4000, hargaPerPcs:2300},
-        {pcs:10, hargaPabrikPerPcs:1500, totalBeli:15000, hargaJualPack:23000, profitPerPack:8000, hargaPerPcs:2300},
-        {pcs:20, hargaPabrikPerPcs:1500, totalBeli:30000, hargaJualPack:46000, profitPerPack:16000, hargaPerPcs:2300},
-        {pcs:25, hargaPabrikPerPcs:1500, totalBeli:37500, hargaJualPack:57500, profitPerPack:20000, hargaPerPcs:2300},
-      ],
-      PerPack: [
-        {pcs:50, hargaPabrikPerPcs:1500, totalBeli:75000, hargaJualPack:105000, profitPerPack:30000, hargaPerPcs:2100},
-        {pcs:100, hargaPabrikPerPcs:1500, totalBeli:150000, hargaJualPack:210000, profitPerPack:60000, hargaPerPcs:2100},
-        {pcs:200, hargaPabrikPerPcs:1500, totalBeli:300000, hargaJualPack:400000, profitPerPack:100000, hargaPerPcs:2000},
-        {pcs:300, hargaPabrikPerPcs:1500, totalBeli:450000, hargaJualPack:600000, profitPerPack:150000, hargaPerPcs:2000},
-        {pcs:500, hargaPabrikPerPcs:1500, totalBeli:750000, hargaJualPack:950000, profitPerPack:200000, hargaPerPcs:1900},
-        {pcs:1000, hargaPabrikPerPcs:1500, totalBeli:1500000, hargaJualPack:1900000, profitPerPack:400000, hargaPerPcs:1900},
-      ]
-    },
-    Reseller: {
-      Eceran: [
-        {pcs:5, hargaPabrikPerPcs:1500, totalBeli:7500, hargaJualPack:10000, profitPerPack:2500, hargaPerPcs:2000},
-        {pcs:10, hargaPabrikPerPcs:1500, totalBeli:15000, hargaJualPack:20000, profitPerPack:5000, hargaPerPcs:2000},
-        {pcs:20, hargaPabrikPerPcs:1500, totalBeli:30000, hargaJualPack:40000, profitPerPack:10000, hargaPerPcs:2000},
-        {pcs:25, hargaPabrikPerPcs:1500, totalBeli:37500, hargaJualPack:50000, profitPerPack:12500, hargaPerPcs:2000},
-      ],
-      PerPack: [
-        {pcs:50, hargaPabrikPerPcs:1500, totalBeli:75000, hargaJualPack:90000, profitPerPack:15000, hargaPerPcs:1800},
-        {pcs:100, hargaPabrikPerPcs:1500, totalBeli:150000, hargaJualPack:180000, profitPerPack:30000, hargaPerPcs:1800},
-        {pcs:200, hargaPabrikPerPcs:1500, totalBeli:300000, hargaJualPack:340000, profitPerPack:40000, hargaPerPcs:1700},
-        {pcs:300, hargaPabrikPerPcs:1500, totalBeli:450000, hargaJualPack:510000, profitPerPack:60000, hargaPerPcs:1700},
-        {pcs:500, hargaPabrikPerPcs:1500, totalBeli:750000, hargaJualPack:800000, profitPerPack:50000, hargaPerPcs:1600},
-        {pcs:1000, hargaPabrikPerPcs:1500, totalBeli:1500000, hargaJualPack:1600000, profitPerPack:100000, hargaPerPcs:1600},
-      ]
-    }
-  }
-};
-
-// PWA Service Worker register
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log('Service Worker terdaftar:', reg))
-      .catch(err => console.log('Service Worker gagal:', err));
-  });
-}
-

@@ -3,20 +3,10 @@
   }
 
   :root {
-  --bg:#f6f7fb;
-  --card:#fff;
-  --accent:#e53935;
-  --primary:#1e88e5;
-  --muted:#666;
-  --success:#2e7d32;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Inter, Arial, sans-serif;
-  background:var(--bg);
-  color:#222;
-}
+    --gap: 10px;
+    --radius: 12px;
+    --shadow: 0 2px 6px rgba(0,0,0,.08);
+  }
 
   body {
     font-family: Arial, sans-serif;
@@ -736,49 +726,4 @@ td.aksi-cell {
 }
 .modal-stok.abu {
   color: #666;
-}
-
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Inter, Arial, sans-serif;
-  background:var(--bg);
-  color:#222;
-}
-.container{
-  max-width:980px;
-  margin:18px auto;
-  padding:18px;
-}
-h1{margin:4px 0 12px;font-size:22px}
-.card{
-  background:var(--card);
-  border-radius:8px;
-  padding:12px;
-  margin-bottom:14px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.06);
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:10px;
-  align-items:end;
-}
-label{display:flex;flex-direction:column;font-size:13px}
-input[type="number"], select{
-  padding:8px;border-radius:6px;border:1px solid #ddd;margin-top:6px;
-}
-button{padding:9px 12px;border:none;border-radius:6px;cursor:pointer}
-button.primary{background:var(--primary);color:#fff}
-button.danger{background:#ef5350;color:#fff}
-.priceCard{grid-column:1/-1;background:#fafafa;padding:10px;border-radius:6px;border:1px solid #eee}
-.priceCard div{margin:4px 0}
-.rekapTop{display:flex;gap:12px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
-table{width:100%;border-collapse:collapse;background:#fff}
-table th, table td{border:1px solid #eee;padding:8px;font-size:13px;text-align:left}
-table th{background:#fafafa}
-.stokInfo{grid-column:1/-1;padding:8px;background:#fff;border-radius:6px;border:1px solid #eee}
-@media (max-width:640px){
-  .grid{grid-template-columns:1fr}
-  .priceCard{font-size:13px}
 }
