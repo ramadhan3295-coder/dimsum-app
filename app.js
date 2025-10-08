@@ -146,29 +146,19 @@ function hapusPengeluaran(btn) {
 
 // ===== Transaksi =====
 function simpanData() {
-  // 🔹 ambil jenis pembeli & jenis paket
-  const pembeli = document.getElementById("jenisPembeli").value;
-  const paket = document.getElementById("jenisPaket").value;
-  if (!pembeli || pembeli === "__placeholder") { 
-    alert("Silahkan pilih jenis pembeli!"); 
-    return; 
-  }
-  if (!paket || paket === "__placeholder") { 
-    alert("Silahkan pilih jenis paket!"); 
-    return; 
-  }
-
-  // 🔹 ambil jenis produk
   const jenis = document.getElementById("jenisProduk").value;
   if (!jenis || jenis === "__placeholder") { 
     alert("Silahkan pilih produk!"); 
     return; 
   }
 
-  // hanya wajib pilih pembeli & paket untuk produk frozen
+  // ✅ hanya produk frozen yang wajib pilih pembeli & paket
+  let pembeli = "-";
+  let paket = "-";
+
   if (jenis === "jumbofrozen" || jenis === "mediumfrozen") {
-    const pembeli = document.getElementById("jenisPembeli").value;
-    const paket = document.getElementById("jenisPaket").value;
+    pembeli = document.getElementById("jenisPembeli").value;
+    paket = document.getElementById("jenisPaket").value;
     if (!pembeli || pembeli === "__placeholder") { 
       alert("Silahkan pilih jenis pembeli!"); 
       return; 
@@ -208,7 +198,7 @@ function simpanData() {
   const profit  = omzet - hppTot;
   const marginStr = hppTot > 0 ? ((profit / hppTot) * 100).toFixed(1) + "%" : "0%";
 
-  // 🔹 simpan semua ke dalam rekap
+  // ✅ simpan semua data
   const hasil = {
     id: generateId(),
     tanggal: new Date().toLocaleString("id-ID", { 
@@ -232,7 +222,7 @@ function simpanData() {
   rekapData.push(hasil);
   saveToLocalStorage();
 
-  // 🔹 reset input form
+  // ✅ reset input
   document.getElementById("jumlahBox").value = 0;
   document.getElementById("jumlahPcs").value = 0;
   document.getElementById("jenisProduk").value = "__placeholder";
