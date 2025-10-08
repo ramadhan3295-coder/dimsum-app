@@ -35,18 +35,60 @@ const rowsPerPage = 15;
 let searchQuery = "";
 let pengeluaranData = [];   // ✅ tambahkan ini
 
+// ===== VARIAN KHUSUS BERDASARKAN PEMBELI & PAKET =====
+const varianPembeli = {
+  enduser: {
+    jumbofrozen: { eceran: [4,6,8,10], pack: [50,100,200,300,500,1000] },
+    mediumfrozen: { eceran: [5,10,20,25], pack: [50,100,200,300,500,1000] },
+  },
+  reseller: {
+    jumbofrozen: { eceran: [4,6,8,10], pack: [50,100,200,300,500,1000] },
+    mediumfrozen: { eceran: [5,10,20,25], pack: [50,100,200,300,500,1000] },
+  }
+};
+
+// jika pembeli atau paket berubah
+function onJenisPembeliChange() {
+  document.getElementById("jenisProduk").value = "__placeholder";
+  document.getElementById("varian").innerHTML = "";
+}
+
+function onJenisPaketChange() {
+  populateVarian(document.getElementById("jenisProduk").value);
+}
+
 // ===== Varian & Input =====
-function populateVarian(jenis){
-  const sel=document.getElementById("varian"); sel.innerHTML="";
-  if(!jenis || jenis==='__placeholder') return;
-  const keys=Object.keys(hargaBox[jenis]);
-  keys.forEach(k=>{
-    const opt=document.createElement("option");
-    opt.value=k; opt.textContent=`${k} pcs - ${formatRp(hargaBox[jenis][k])}`;
+function populateVarian(jenis) {
+  const sel = document.getElementById("varian");
+  sel.innerHTML = "";
+
+  if (!jenis || jenis === '__placeholder') return;
+
+  const pembeli = document.getElementById("jenisPembeli").value;
+  const paket = document.getElementById("jenisPaket").value;
+
+  let keys = [];
+
+  // 🔸 khusus produk jumbo/medium frozen
+  if ((jenis === "jumbofrozen" || jenis === "mediumfrozen") &&
+      pembeli && paket && pembeli !== '__placeholder' && paket !== '__placeholder') {
+
+    keys = varianPembeli[pembeli]?.[jenis]?.[paket] || [];
+  } else {
+    // 🔸 produk lainnya (mentai, original, dll) — pakai semua varian hargaBox
+    keys = Object.keys(hargaBox[jenis]);
+  }
+
+  keys.forEach(k => {
+    const opt = document.createElement("option");
+    opt.value = k;
+    opt.textContent = `${k} pcs - ${formatRp(hargaBox[jenis][k])}`;
     sel.appendChild(opt);
   });
-  sel.value=keys[0];
+
+  if (keys.length > 0) sel.value = keys[0];
 }
+
 function onJenisChange(){ populateVarian(document.getElementById("jenisProduk").value); hitungDariBox(); }
 function onVarianChange(){ hitungDariBox(); }
 function hitungDariBox(){
@@ -103,19 +145,45 @@ function hapusPengeluaran(btn) {
 }
 
 // ===== Transaksi =====
-function simpanData(){
-  const jenis=document.getElementById("jenisProduk").value;
-  if(!jenis || jenis==='__placeholder'){ alert("Silahkan pilih produk!"); return; }
-  const varian=parseInt(document.getElementById("varian").value)||0;
-  const jumlahBox = parseInt(document.getElementById("jumlahBox").value) || 0;
-  if (jumlahBox <= 0) { alert("Jumlah box tidak boleh nol atau kosong."); return; }
+function simpanData() {
+  // 🔹 ambil jenis pembeli & jenis paket
+  const pembeli = document.getElementById("jenisPembeli").value;
+  const paket = document.getElementById("jenisPaket").value;
+  if (!pembeli || pembeli === "__placeholder") { 
+    alert("Silahkan pilih jenis pembeli!"); 
+    return; 
+  }
+  if (!paket || paket === "__placeholder") { 
+    alert("Silahkan pilih jenis paket!"); 
+    return; 
+  }
 
-  const perBox = isiBox[varian]||0;
-  const jumlahPcs = jumlahBox*perBox;
+  // 🔹 ambil jenis produk
+  const jenis = document.getElementById("jenisProduk").value;
+  if (!jenis || jenis === "__placeholder") { 
+    alert("Silahkan pilih produk!"); 
+    return; 
+  }
+
+  const varian = parseInt(document.getElementById("varian").value) || 0;
+  const jumlahBox = parseInt(document.getElementById("jumlahBox").value) || 0;
+  if (jumlahBox <= 0) { 
+    alert("Jumlah box tidak boleh nol atau kosong."); 
+    return; 
+  }
+
+  const perBox = isiBox[varian] || 0;
+  const jumlahPcs = jumlahBox * perBox;
   const jenisStok = (jenis.includes("medium")) ? "medium" : "jumbo";
 
-  if(stok[jenisStok] <= 0){ alert("Stok "+jenisStok+" habis! Tambah stok dulu."); return; }
-  if(stok[jenisStok] < jumlahPcs){ alert("Stok "+jenisStok+" tidak cukup! Sisa: "+stok[jenisStok]+" pcs"); return; }
+  if (stok[jenisStok] <= 0) { 
+    alert("Stok " + jenisStok + " habis! Tambah stok dulu."); 
+    return; 
+  }
+  if (stok[jenisStok] < jumlahPcs) { 
+    alert("Stok " + jenisStok + " tidak cukup! Sisa: " + stok[jenisStok] + " pcs"); 
+    return; 
+  }
 
   stok[jenisStok] -= jumlahPcs;
 
@@ -124,16 +192,19 @@ function simpanData(){
   const omzet   = jumlahBox * hargaPerBox;
   const hppTot  = jumlahBox * hppPerBox;
   const profit  = omzet - hppTot;
-  const marginStr = hppTot>0 ? ((profit/hppTot)*100).toFixed(1)+"%" : "0%";
+  const marginStr = hppTot > 0 ? ((profit / hppTot) * 100).toFixed(1) + "%" : "0%";
 
+  // 🔹 simpan semua ke dalam rekap
   const hasil = {
     id: generateId(),
     tanggal: new Date().toLocaleString("id-ID", { 
       year: "numeric", month: "2-digit", day: "2-digit", 
       hour: "2-digit", minute: "2-digit", second: "2-digit" 
     }),
+    jenisPembeli: pembeli,
+    jenisPaket: paket,
     jenis, jenisStok,
-    varianLabel: varian+" pcs",
+    varianLabel: varian + " pcs",
     isiPerBox: isiBox[varian],
     jumlahBox, jumlahPcs,
     sisaStok: stok[jenisStok],
@@ -143,14 +214,17 @@ function simpanData(){
     profit,
     marginStr
   };
+
   rekapData.push(hasil);
   saveToLocalStorage();
 
-  // Reset input
+  // 🔹 reset input form
   document.getElementById("jumlahBox").value = 0;
   document.getElementById("jumlahPcs").value = 0;
   document.getElementById("jenisProduk").value = "__placeholder";
   document.getElementById("varian").innerHTML = "";
+  document.getElementById("jenisPaket").value = "__placeholder";
+  document.getElementById("jenisPembeli").value = "__placeholder";
 
   updateRekapTable();
   updateSummary();
@@ -317,27 +391,29 @@ function updateRekapTable() {
   // Render baris tabel
   pageData.forEach((row, index) => {
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${start + index + 1}</td>
-      <td>${row.tanggal}</td>
-      <td>${row.jenis}</td>
-      <td>${row.jenisStok}</td>
-      <td>${row.varianLabel || "-"}</td>
-      <td>${row.jumlahBox || "-"}</td>
-      <td>${row.jumlahPcs || "-"}</td>
-      <td>${row.sisaStok}</td>
-      <td>${row.hargaPerBox ? formatRp(row.hargaPerBox) : "-"}</td>
-      <td>${row.totalOmzet ? formatRp(row.totalOmzet) : "-"}</td>
-      <td>${row.totalHPP ? formatRp(row.totalHPP) : "-"}</td>
-      <td>${row.profit ? formatRp(row.profit) : "-"}</td>
-      <td>${row.marginStr || "-"}</td>
-      <td class="aksi-cell">
-        <div class="action-buttons">
-          <button title="Edit" onclick="editRow('${row.id}')">✏️</button>
-          <button title="Hapus" onclick="hapusBaris('${row.id}')">🗑️</button>
-        </div>
-      </td>
-    `;
+tr.innerHTML = `
+  <td>${start + index + 1}</td>
+  <td>${row.tanggal}</td>
+  <td>${row.jenisPembeli || '-'}</td>
+  <td>${row.jenisPaket || '-'}</td>
+  <td>${row.jenis}</td>
+  <td>${row.jenisStok}</td>
+  <td>${row.varianLabel || '-'}</td>
+  <td>${row.jumlahBox || '-'}</td>
+  <td>${row.jumlahPcs || '-'}</td>
+  <td>${row.sisaStok}</td>
+  <td>${row.hargaPerBox ? formatRp(row.hargaPerBox) : '-'}</td>
+  <td>${row.totalOmzet ? formatRp(row.totalOmzet) : '-'}</td>
+  <td>${row.totalHPP ? formatRp(row.totalHPP) : '-'}</td>
+  <td>${row.profit ? formatRp(row.profit) : '-'}</td>
+  <td>${row.marginStr || '-'}</td>
+  <td class="aksi-cell">
+    <div class="action-buttons">
+      <button title="Edit" onclick="editRow('${row.id}')">✏️</button>
+      <button title="Hapus" onclick="hapusBaris('${row.id}')">🗑️</button>
+    </div>
+  </td>
+`;
     tbody.appendChild(tr);
   });
 
@@ -612,24 +688,26 @@ function updateSummary() {
 // ====== Export Excel ======
 function downloadExcel() {
   // ===== Sheet 1: Rekap Penjualan =====
-  const dataRekap = [
-    ["No","Tanggal","Jenis","Varian","Box","Pcs","Harga/Box","Omzet","HPP","Profit","Margin"]
-  ];
+const dataRekap = [
+  ["No","Tanggal","Jenis Pembeli","Jenis Paket","Jenis","Varian","Box","Pcs","Harga/Box","Omzet","HPP","Profit","Margin"]
+];
   let totalOmzet=0, totalHPP=0, totalProfit=0;
   rekapData.forEach((r,i)=>{
-    dataRekap.push([
-      i+1,
-      r.tanggal,
-      r.jenis,
-      r.varianLabel,
-      r.jumlahBox,
-      r.jumlahPcs,
-      r.hargaPerBox,
-      r.totalOmzet,
-      r.totalHPP,
-      r.profit,
-      r.marginStr
-    ]);
+dataRekap.push([
+  i+1,
+  r.tanggal,
+  r.jenisPembeli || "-",
+  r.jenisPaket || "-",
+  r.jenis,
+  r.varianLabel,
+  r.jumlahBox,
+  r.jumlahPcs,
+  r.hargaPerBox,
+  r.totalOmzet,
+  r.totalHPP,
+  r.profit,
+  r.marginStr
+]);
     totalOmzet += r.totalOmzet;
     totalHPP   += r.totalHPP;
     totalProfit+= r.profit;
