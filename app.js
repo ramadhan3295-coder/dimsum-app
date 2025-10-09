@@ -5,6 +5,42 @@ function generateId() {
 function formatRp(n){return "Rp " + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");}
 
 // ===== Konstanta Produk =====
+// ===== Data Paket Harga Jual & Beli =====
+const dataPaket = {
+  enduser: {
+    eceran: [
+      { nama: "Paket jumbo frozen 4", pcs: 4, beli: 7200, jual: 9000 },
+      { nama: "Paket jumbo frozen 6", pcs: 6, beli: 10800, jual: 13500 },
+      { nama: "Paket jumbo frozen 8", pcs: 8, beli: 14400, jual: 18000 },
+      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 22500 }
+    ],
+    perpack: [
+      { nama: "Paket jumbo frozen 50", pcs: 50, beli: 90000, jual: 110000 },
+      { nama: "Paket jumbo frozen 100", pcs: 100, beli: 180000, jual: 220000 },
+      { nama: "Paket jumbo frozen 200", pcs: 200, beli: 360000, jual: 420000 },
+      { nama: "Paket jumbo frozen 300", pcs: 300, beli: 540000, jual: 630000 },
+      { nama: "Paket jumbo frozen 500", pcs: 500, beli: 900000, jual: 1000000 },
+      { nama: "Paket jumbo frozen 1000", pcs: 1000, beli: 1800000, jual: 2000000 }
+    ]
+  },
+  reseller: {
+    eceran: [
+      { nama: "Paket jumbo frozen 4", pcs: 4, beli: 7200, jual: 8000 },
+      { nama: "Paket jumbo frozen 6", pcs: 6, beli: 10800, jual: 12000 },
+      { nama: "Paket jumbo frozen 8", pcs: 8, beli: 14400, jual: 16000 },
+      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 20000 }
+    ],
+    perpack: [
+      { nama: "Paket jumbo frozen 50", pcs: 50, beli: 90000, jual: 105000 },
+      { nama: "Paket jumbo frozen 100", pcs: 100, beli: 180000, jual: 210000 },
+      { nama: "Paket jumbo frozen 200", pcs: 200, beli: 360000, jual: 400000 },
+      { nama: "Paket jumbo frozen 300", pcs: 300, beli: 540000, jual: 600000 },
+      { nama: "Paket jumbo frozen 500", pcs: 500, beli: 900000, jual: 950000 },
+      { nama: "Paket jumbo frozen 1000", pcs: 1000, beli: 1800000, jual: 1900000 }
+    ]
+  }
+};
+
 const isiBox = {
   3:3,4:4,5:5,6:6,8:8,10:10,12:12,20:20,25:25,
   50:50,100:100,200:200,300:300,500:500,1000:1000
