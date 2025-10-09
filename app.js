@@ -148,36 +148,56 @@ function onJenisPaketChange() {
   populateVarian(document.getElementById("jenisProduk").value);
 }
 
-// ===== Varian & Input =====
-function populateVarian(jenis) {
-  const sel = document.getElementById("varian");
-  sel.innerHTML = "";
+// ===== Update Varian Berdasarkan Jenis Pembeli & Paket =====
+function populateVarian() {
+  const jenisProduk = document.getElementById("jenisProduk").value;
+  const jenisPembeli = document.getElementById("jenisPembeli").value || "";
+  const jenisPaket = document.getElementById("jenisPaket").value || "";
+  const varianSelect = document.getElementById("varian");
+  varianSelect.innerHTML = "";
 
-  if (!jenis || jenis === '__placeholder') return;
+  // Kalau belum pilih produk, hentikan dulu
+  if (!jenisProduk || jenisProduk === "__placeholder") return;
 
-  const pembeli = document.getElementById("jenisPembeli").value;
-  const paket = document.getElementById("jenisPaket").value;
+  let daftarVarian = [];
 
-  let keys = [];
-
-  // 🔸 Khusus produk frozen → ikuti jenis pembeli & paket
-  if ((jenis === "jumbofrozen" || jenis === "mediumfrozen") &&
-      pembeli && paket && pembeli !== '__placeholder' && paket !== '__placeholder') {
-    keys = varianPembeli[pembeli]?.[jenis]?.[paket] || [];
+  // 🔹 Tentukan daftar varian berdasarkan produk & paket
+  if (jenisProduk === "jumbofrozen") {
+    daftarVarian = jenisPaket === "eceran" ? [4,6,8,10] : [50,100,200,300,500,1000];
   } 
-  // 🔸 Produk lain (mentai/original) → tampil semua varian
+  else if (jenisProduk === "mediumfrozen") {
+    daftarVarian = jenisPaket === "eceran" ? [5,10,20,25] : [50,100,200,300,500,1000];
+  } 
   else {
-    keys = Object.keys(hargaBox[jenis]);
+    // Produk non-frozen (mentai, original)
+    daftarVarian = Object.keys(hargaBox[jenisProduk] || {}).map(Number);
   }
 
-  keys.forEach(k => {
-    const opt = document.createElement("option");
-    opt.value = k;
-    opt.textContent = `${k} pcs - ${formatRp(hargaBox[jenis][k])}`;
-    sel.appendChild(opt);
-  });
+  // Tambah placeholder
+  const placeholder = document.createElement("option");
+  placeholder.value = "__placeholder";
+  placeholder.textContent = "-- Pilih Varian Box --";
+  varianSelect.appendChild(placeholder);
 
-  if (keys.length > 0) sel.value = keys[0];
+  // 🔹 Pilih harga sesuai jenis pembeli
+  daftarVarian.forEach(v => {
+    let hargaTampil = 0;
+
+    if (jenisProduk === "jumbofrozen" || jenisProduk === "mediumfrozen") {
+      if (jenisPembeli.toLowerCase().includes("end user")) {
+        hargaTampil = hargaBoxEndUser[jenisProduk]?.[v] || 0;
+      } else {
+        hargaTampil = hargaBox[jenisProduk]?.[v] || 0;
+      }
+    } else {
+      hargaTampil = hargaBox[jenisProduk]?.[v] || 0;
+    }
+
+    const opt = document.createElement("option");
+    opt.value = v;
+    opt.textContent = `${v} pcs - ${formatRp(hargaTampil)}`;
+    varianSelect.appendChild(opt);
+  });
 }
 
 function onJenisChange(){ populateVarian(document.getElementById("jenisProduk").value); hitungDariBox(); }

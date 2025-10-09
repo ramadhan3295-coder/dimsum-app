@@ -41,15 +41,15 @@
 <div class="row" style="margin-top:10px;">
   <div>
     <label for="jenisPembeli">Jenis Pembeli</label>
-    <select id="jenisPembeli" onchange="onJenisPembeliChange()">
+    <select id="jenisPembeli" onchange="populateVarian()">
       <option value="__placeholder" disabled selected>--Pilih Jenis Pembeli--</option>
-      <option value="enduser">End User / Pelanggan</option>
-      <option value="reseller">Reseller</option>
+      <option value="End User / Pelanggan">End User / Pelanggan</option>
+      <option value="Reseller">Reseller</option>
     </select>
   </div>
   <div>
     <label for="jenisPaket">Jenis Paket</label>
-    <select id="jenisPaket" onchange="onJenisPaketChange()">
+    <select id="jenisPaket" onchange="populateVarian()">
       <option value="__placeholder" disabled selected>--Pilih Jenis Paket--</option>
       <option value="eceran">Eceran</option>
       <option value="pack">Per Pack</option>
@@ -60,7 +60,7 @@
     <div class="row" style="margin-top:10px;">
       <div>
         <label for="jenisProduk">Jenis Produk</label>
-        <select id="jenisProduk" onchange="onJenisChange()">
+        <select id="jenisProduk" onchange="populateVarian()">
           <option value="__placeholder" disabled selected>--Pilih Produk--</option>
           <option value="jumbofrozen">Dimsum Jumbo Frozen</option>
           <option value="mentai">Dimsum Jumbo Mentai</option>
