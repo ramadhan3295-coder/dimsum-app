@@ -5,38 +5,67 @@ function generateId() {
 function formatRp(n){return "Rp " + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");}
 
 // ===== Konstanta Produk =====
-// ===== Data Paket Harga Jual & Beli =====
+// ===== Data Harga Lengkap Dimsum Frozen =====
 const dataPaket = {
   enduser: {
     eceran: [
+      // 🟢 Jumbo Frozen (Eceran)
       { nama: "Paket jumbo frozen 4", pcs: 4, beli: 7200, jual: 9000 },
       { nama: "Paket jumbo frozen 6", pcs: 6, beli: 10800, jual: 13500 },
       { nama: "Paket jumbo frozen 8", pcs: 8, beli: 14400, jual: 18000 },
-      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 22500 }
+      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 22500 },
+      // 🟢 Medium Frozen (Eceran)
+      { nama: "Paket medium frozen 5", pcs: 5, beli: 7500, jual: 11500 },
+      { nama: "Paket medium frozen 10", pcs: 10, beli: 15000, jual: 23000 },
+      { nama: "Paket medium frozen 20", pcs: 20, beli: 30000, jual: 46000 },
+      { nama: "Paket medium frozen 25", pcs: 25, beli: 37500, jual: 57500 }
     ],
     perpack: [
+      // 🟢 Jumbo Frozen (Per Pack)
       { nama: "Paket jumbo frozen 50", pcs: 50, beli: 90000, jual: 110000 },
       { nama: "Paket jumbo frozen 100", pcs: 100, beli: 180000, jual: 220000 },
       { nama: "Paket jumbo frozen 200", pcs: 200, beli: 360000, jual: 420000 },
       { nama: "Paket jumbo frozen 300", pcs: 300, beli: 540000, jual: 630000 },
       { nama: "Paket jumbo frozen 500", pcs: 500, beli: 900000, jual: 1000000 },
-      { nama: "Paket jumbo frozen 1000", pcs: 1000, beli: 1800000, jual: 2000000 }
+      { nama: "Paket jumbo frozen 1000", pcs: 1000, beli: 1800000, jual: 2000000 },
+      // 🟢 Medium Frozen (Per Pack)
+      { nama: "Paket medium frozen 50", pcs: 50, beli: 75000, jual: 100000 },
+      { nama: "Paket medium frozen 100", pcs: 100, beli: 150000, jual: 200000 },
+      { nama: "Paket medium frozen 200", pcs: 200, beli: 300000, jual: 390000 },
+      { nama: "Paket medium frozen 300", pcs: 300, beli: 450000, jual: 570000 },
+      { nama: "Paket medium frozen 500", pcs: 500, beli: 750000, jual: 950000 },
+      { nama: "Paket medium frozen 1000", pcs: 1000, beli: 1500000, jual: 1800000 }
     ]
   },
+
   reseller: {
     eceran: [
-      { nama: "Paket jumbo frozen 4", pcs: 4, beli: 7200, jual: 8000 },
-      { nama: "Paket jumbo frozen 6", pcs: 6, beli: 10800, jual: 12000 },
-      { nama: "Paket jumbo frozen 8", pcs: 8, beli: 14400, jual: 16000 },
-      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 20000 }
+      // 🟣 Jumbo Frozen (Eceran)
+      { nama: "Paket jumbo frozen 4", pcs: 4, beli: 7200, jual: 8200 },
+      { nama: "Paket jumbo frozen 6", pcs: 6, beli: 10800, jual: 12200 },
+      { nama: "Paket jumbo frozen 8", pcs: 8, beli: 14400, jual: 16200 },
+      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 20000 },
+      // 🟣 Medium Frozen (Eceran)
+      { nama: "Paket medium frozen 5", pcs: 5, beli: 7500, jual: 10000 },
+      { nama: "Paket medium frozen 10", pcs: 10, beli: 15000, jual: 20000 },
+      { nama: "Paket medium frozen 20", pcs: 20, beli: 30000, jual: 40000 },
+      { nama: "Paket medium frozen 25", pcs: 25, beli: 37500, jual: 50000 }
     ],
     perpack: [
-      { nama: "Paket jumbo frozen 50", pcs: 50, beli: 90000, jual: 105000 },
-      { nama: "Paket jumbo frozen 100", pcs: 100, beli: 180000, jual: 210000 },
-      { nama: "Paket jumbo frozen 200", pcs: 200, beli: 360000, jual: 400000 },
-      { nama: "Paket jumbo frozen 300", pcs: 300, beli: 540000, jual: 600000 },
+      // 🟣 Jumbo Frozen (Per Pack)
+      { nama: "Paket jumbo frozen 50", pcs: 50, beli: 90000, jual: 102500 },
+      { nama: "Paket jumbo frozen 100", pcs: 100, beli: 180000, jual: 205000 },
+      { nama: "Paket jumbo frozen 200", pcs: 200, beli: 360000, jual: 395000 },
+      { nama: "Paket jumbo frozen 300", pcs: 300, beli: 540000, jual: 580000 },
       { nama: "Paket jumbo frozen 500", pcs: 500, beli: 900000, jual: 950000 },
-      { nama: "Paket jumbo frozen 1000", pcs: 1000, beli: 1800000, jual: 1900000 }
+      { nama: "Paket jumbo frozen 1000", pcs: 1000, beli: 1800000, jual: 1850000 },
+      // 🟣 Medium Frozen (Per Pack)
+      { nama: "Paket medium frozen 50", pcs: 50, beli: 75000, jual: 95000 },
+      { nama: "Paket medium frozen 100", pcs: 100, beli: 150000, jual: 190000 },
+      { nama: "Paket medium frozen 200", pcs: 200, beli: 300000, jual: 370000 },
+      { nama: "Paket medium frozen 300", pcs: 300, beli: 450000, jual: 540000 },
+      { nama: "Paket medium frozen 500", pcs: 500, beli: 750000, jual: 900000 },
+      { nama: "Paket medium frozen 1000", pcs: 1000, beli: 1500000, jual: 1800000 }
     ]
   }
 };
