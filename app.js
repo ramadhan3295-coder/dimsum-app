@@ -10,41 +10,41 @@ const dataPaket = {
   enduser: {
     eceran: [
       // 🟢 Jumbo Frozen (Eceran)
-      { nama: "Paket jumbo frozen 4", pcs: 4, beli: 7200, jual: 9000 },
-      { nama: "Paket jumbo frozen 6", pcs: 6, beli: 10800, jual: 13500 },
-      { nama: "Paket jumbo frozen 8", pcs: 8, beli: 14400, jual: 18000 },
-      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 22500 },
+      { nama: "Paket jumbo frozen 4", pcs: 4, beli: 7200, jual: 10000 },
+      { nama: "Paket jumbo frozen 6", pcs: 6, beli: 10800, jual: 15000 },
+      { nama: "Paket jumbo frozen 8", pcs: 8, beli: 14400, jual: 20000 },
+      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 25000 },
       // 🟢 Medium Frozen (Eceran)
-      { nama: "Paket medium frozen 5", pcs: 5, beli: 7500, jual: 11500 },
-      { nama: "Paket medium frozen 10", pcs: 10, beli: 15000, jual: 23000 },
-      { nama: "Paket medium frozen 20", pcs: 20, beli: 30000, jual: 46000 },
-      { nama: "Paket medium frozen 25", pcs: 25, beli: 37500, jual: 57500 }
+      { nama: "Paket medium frozen 5", pcs: 5, beli: 7500, jual: 11000 },
+      { nama: "Paket medium frozen 10", pcs: 10, beli: 15000, jual: 22000 },
+      { nama: "Paket medium frozen 20", pcs: 20, beli: 30000, jual: 44000 },
+      { nama: "Paket medium frozen 25", pcs: 25, beli: 37500, jual: 55000 }
     ],
     perpack: [
       // 🟢 Jumbo Frozen (Per Pack)
-      { nama: "Paket jumbo frozen 50", pcs: 50, beli: 90000, jual: 110000 },
-      { nama: "Paket jumbo frozen 100", pcs: 100, beli: 180000, jual: 220000 },
-      { nama: "Paket jumbo frozen 200", pcs: 200, beli: 360000, jual: 420000 },
-      { nama: "Paket jumbo frozen 300", pcs: 300, beli: 540000, jual: 630000 },
-      { nama: "Paket jumbo frozen 500", pcs: 500, beli: 900000, jual: 1000000 },
-      { nama: "Paket jumbo frozen 1000", pcs: 1000, beli: 1800000, jual: 2000000 },
+      { nama: "Paket jumbo frozen 50", pcs: 50, beli: 90000, jual: 107500 },
+      { nama: "Paket jumbo frozen 100", pcs: 100, beli: 180000, jual: 215000 },
+      { nama: "Paket jumbo frozen 200", pcs: 200, beli: 360000, jual: 410000 },
+      { nama: "Paket jumbo frozen 300", pcs: 300, beli: 540000, jual: 615000 },
+      { nama: "Paket jumbo frozen 500", pcs: 500, beli: 900000, jual: 975000 },
+      { nama: "Paket jumbo frozen 1000", pcs: 1000, beli: 1800000, jual: 1950000 },
       // 🟢 Medium Frozen (Per Pack)
-      { nama: "Paket medium frozen 50", pcs: 50, beli: 75000, jual: 100000 },
-      { nama: "Paket medium frozen 100", pcs: 100, beli: 150000, jual: 200000 },
-      { nama: "Paket medium frozen 200", pcs: 200, beli: 300000, jual: 390000 },
-      { nama: "Paket medium frozen 300", pcs: 300, beli: 450000, jual: 570000 },
-      { nama: "Paket medium frozen 500", pcs: 500, beli: 750000, jual: 950000 },
-      { nama: "Paket medium frozen 1000", pcs: 1000, beli: 1500000, jual: 1800000 }
+      { nama: "Paket medium frozen 50", pcs: 50, beli: 75000, jual: 95000 },
+      { nama: "Paket medium frozen 100", pcs: 100, beli: 150000, jual: 190000 },
+      { nama: "Paket medium frozen 200", pcs: 200, beli: 300000, jual: 360000 },
+      { nama: "Paket medium frozen 300", pcs: 300, beli: 450000, jual: 540000 },
+      { nama: "Paket medium frozen 500", pcs: 500, beli: 750000, jual: 850000 },
+      { nama: "Paket medium frozen 1000", pcs: 1000, beli: 1500000, jual: 1700000 }
     ]
   },
 
   reseller: {
     eceran: [
       // 🟣 Jumbo Frozen (Eceran)
-      { nama: "Paket jumbo frozen 4", pcs: 4, beli: 7200, jual: 8200 },
-      { nama: "Paket jumbo frozen 6", pcs: 6, beli: 10800, jual: 12200 },
-      { nama: "Paket jumbo frozen 8", pcs: 8, beli: 14400, jual: 16200 },
-      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 20000 },
+      { nama: "Paket jumbo frozen 4", pcs: 4, beli: 7200, jual: 9000 },
+      { nama: "Paket jumbo frozen 6", pcs: 6, beli: 10800, jual: 13500 },
+      { nama: "Paket jumbo frozen 8", pcs: 8, beli: 14400, jual: 18000 },
+      { nama: "Paket jumbo frozen 10", pcs: 10, beli: 18000, jual: 22500 },
       // 🟣 Medium Frozen (Eceran)
       { nama: "Paket medium frozen 5", pcs: 5, beli: 7500, jual: 10000 },
       { nama: "Paket medium frozen 10", pcs: 10, beli: 15000, jual: 20000 },
@@ -55,17 +55,17 @@ const dataPaket = {
       // 🟣 Jumbo Frozen (Per Pack)
       { nama: "Paket jumbo frozen 50", pcs: 50, beli: 90000, jual: 102500 },
       { nama: "Paket jumbo frozen 100", pcs: 100, beli: 180000, jual: 205000 },
-      { nama: "Paket jumbo frozen 200", pcs: 200, beli: 360000, jual: 395000 },
-      { nama: "Paket jumbo frozen 300", pcs: 300, beli: 540000, jual: 580000 },
-      { nama: "Paket jumbo frozen 500", pcs: 500, beli: 900000, jual: 950000 },
+      { nama: "Paket jumbo frozen 200", pcs: 200, beli: 360000, jual: 390000 },
+      { nama: "Paket jumbo frozen 300", pcs: 300, beli: 540000, jual: 585000 },
+      { nama: "Paket jumbo frozen 500", pcs: 500, beli: 900000, jual: 925000 },
       { nama: "Paket jumbo frozen 1000", pcs: 1000, beli: 1800000, jual: 1850000 },
       // 🟣 Medium Frozen (Per Pack)
-      { nama: "Paket medium frozen 50", pcs: 50, beli: 75000, jual: 95000 },
-      { nama: "Paket medium frozen 100", pcs: 100, beli: 150000, jual: 190000 },
-      { nama: "Paket medium frozen 200", pcs: 200, beli: 300000, jual: 370000 },
-      { nama: "Paket medium frozen 300", pcs: 300, beli: 450000, jual: 540000 },
-      { nama: "Paket medium frozen 500", pcs: 500, beli: 750000, jual: 900000 },
-      { nama: "Paket medium frozen 1000", pcs: 1000, beli: 1500000, jual: 1800000 }
+      { nama: "Paket medium frozen 50", pcs: 50, beli: 75000, jual: 90000 },
+      { nama: "Paket medium frozen 100", pcs: 100, beli: 150000, jual: 180000 },
+      { nama: "Paket medium frozen 200", pcs: 200, beli: 300000, jual: 340000 },
+      { nama: "Paket medium frozen 300", pcs: 300, beli: 450000, jual: 510000 },
+      { nama: "Paket medium frozen 500", pcs: 500, beli: 750000, jual: 800000 },
+      { nama: "Paket medium frozen 1000", pcs: 1000, beli: 1500000, jual: 1600000 }
     ]
   }
 };
@@ -76,7 +76,7 @@ const isiBox = {
 };
 //harga reseller
 const hargaBox = {
-  jumbofrozen:{4:8000,6:12000,8:16000,10:20000,50:102500,100:205000,200:390000,300:585000,500:925000,1000:1850000},
+  jumbofrozen:{4:9000,6:13500,8:18000,10:22500,50:102500,100:205000,200:390000,300:585000,500:925000,1000:1850000},
   mentai:{3:13000,4:16000,6:24000,8:32000},
   original:{3:10000,4:12000,6:18000,8:24000},
   mediumfrozen:{5:10000,10:20000,20:40000,25:50000,50:90000,100:180000,200:340000,300:510000,500:800000,1000:1600000},
@@ -96,12 +96,12 @@ const hppBox = {
 // harga jual ke End user
 const hargaBoxEndUser = {
   jumbofrozen: {
-    4: 9000, 6: 13500, 8: 18000, 10: 22500,
-    50: 110000, 100: 220000, 200: 420000, 300: 630000, 500: 1000000, 1000: 2000000
+    4: 10000, 6: 15000, 8: 20000, 10: 25000,
+    50: 107500, 100: 215000, 200: 410000, 300: 615000, 500: 975000, 1000: 1950000
   },
   mediumfrozen: {
-    5: 11500, 10: 23000, 20: 46000, 25: 57500,
-    50: 100000, 100: 200000, 200: 380000, 300: 570000, 500: 900000, 1000: 1800000
+    5: 11000, 10: 22000, 20: 44000, 25: 55000,
+    50: 95000, 100: 190000, 200: 360000, 300: 540000, 500: 850000, 1000: 1700000
   }
 };
 //HPP ke End user
