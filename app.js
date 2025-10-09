@@ -282,28 +282,31 @@ function simpanData() {
 
   stok[jenisStok] -= jumlahPcs;
 
-let hargaPerBox, hppPerBox;
+  // 💰 Pilih harga berdasarkan jenis pembeli
+  let hargaPerBox, hppPerBox;
 
-// Jika produk frozen → sesuaikan dengan jenis pembeli
-if (jenis === "jumbofrozen" || jenis === "mediumfrozen") {
-  if (pembeli === "enduser") {
-    hargaPerBox = hargaBoxEndUser[jenis][varian];
-    hppPerBox   = hppBoxEndUser[jenis][varian];
+  if (jenis === "jumbofrozen" || jenis === "mediumfrozen") {
+    if (pembeli.toLowerCase().includes("end user")) {
+      // 🔹 Harga khusus End User / Pelanggan
+      hargaPerBox = hargaBoxEndUser[jenis][varian];
+      hppPerBox   = hppBoxEndUser[jenis][varian];
+    } else {
+      // 🔹 Harga untuk Reseller
+      hargaPerBox = hargaBox[jenis][varian];
+      hppPerBox   = hppBox[jenis][varian];
+    }
   } else {
+    // 🔹 Produk lain (Mentai / Original)
     hargaPerBox = hargaBox[jenis][varian];
     hppPerBox   = hppBox[jenis][varian];
   }
-} else {
-  // produk selain frozen (mentai/original)
-  hargaPerBox = hargaBox[jenis][varian];
-  hppPerBox   = hppBox[jenis][varian];
-}
+
   const omzet   = jumlahBox * hargaPerBox;
   const hppTot  = jumlahBox * hppPerBox;
   const profit  = omzet - hppTot;
   const marginStr = hppTot > 0 ? ((profit / hppTot) * 100).toFixed(1) + "%" : "0%";
 
-  // ✅ simpan semua data
+  // ✅ Simpan semua data transaksi
   const hasil = {
     id: generateId(),
     tanggal: new Date().toLocaleString("id-ID", { 
@@ -327,7 +330,7 @@ if (jenis === "jumbofrozen" || jenis === "mediumfrozen") {
   rekapData.push(hasil);
   saveToLocalStorage();
 
-  // ✅ reset input
+  // ✅ Reset input setelah simpan
   document.getElementById("jumlahBox").value = 0;
   document.getElementById("jumlahPcs").value = 0;
   document.getElementById("jenisProduk").value = "__placeholder";
