@@ -9,14 +9,16 @@ const isiBox = {
   3:3,4:4,5:5,6:6,8:8,10:10,12:12,20:20,25:25,
   50:50,100:100,200:200,300:300,500:500,1000:1000
 };
+//harga reseller
 const hargaBox = {
-  jumbofrozen:{4:8000,6:12000,8:16000,10:20000,50:105000,100:210000,200:400000,300:600000,500:950000,1000:1900000},
+  jumbofrozen:{4:8000,6:12000,8:16000,10:20000,50:102500,100:205000,200:390000,300:585000,500:925000,1000:1850000},
   mentai:{3:13000,4:16000,6:24000,8:32000},
   original:{3:10000,4:12000,6:18000,8:24000},
   mediumfrozen:{5:10000,10:20000,20:40000,25:50000,50:90000,100:180000,200:340000,300:510000,500:800000,1000:1600000},
   mediummentai:{5:15000,10:30000,12:35000,20:58000,25:72500},
   mediumoriginal:{5:13000,10:25000,20:50000,25:62500}
 };
+//hpp reseller
 const hppBox = {
   jumbofrozen:{4:7200,6:10800,8:14400,10:18000,50:90000,100:180000,200:360000,300:540000,500:900000,1000:1800000},
   mentai:{3:10600,4:12500,6:19300,8:25100},
@@ -25,6 +27,30 @@ const hppBox = {
   mediummentai:{5:10900,10:21400,12:25760,20:42200,25:53700},
   mediumoriginal:{5:9700,10:19000,20:37200,25:45700}
 };
+// ===== Harga Khusus End User / Pelanggan =====
+// harga jual ke End user
+const hargaBoxEndUser = {
+  jumbofrozen: {
+    4: 9000, 6: 13500, 8: 18000, 10: 22500,
+    50: 110000, 100: 220000, 200: 420000, 300: 630000, 500: 1000000, 1000: 2000000
+  },
+  mediumfrozen: {
+    5: 11500, 10: 23000, 20: 46000, 25: 57500,
+    50: 100000, 100: 200000, 200: 380000, 300: 570000, 500: 900000, 1000: 1800000
+  }
+};
+//HPP ke End user
+const hppBoxEndUser = {
+  jumbofrozen: {
+    4: 7200, 6: 10800, 8: 14400, 10: 18000,
+    50: 90000, 100: 180000, 200: 360000, 300: 540000, 500: 900000, 1000: 1800000
+  },
+  mediumfrozen: {
+    5: 7500, 10: 15000, 20: 30000, 25: 37500,
+    50: 75000, 100: 150000, 200: 300000, 300: 450000, 500: 750000, 1000: 1500000
+  }
+};
+
 const modalPerPcs = { jumbo:1800, medium:1500 };
 
 // ===== State =====
@@ -191,8 +217,22 @@ function simpanData() {
 
   stok[jenisStok] -= jumlahPcs;
 
-  const hargaPerBox = hargaBox[jenis][varian];
-  const hppPerBox   = hppBox[jenis][varian];
+let hargaPerBox, hppPerBox;
+
+// Jika produk frozen → sesuaikan dengan jenis pembeli
+if (jenis === "jumbofrozen" || jenis === "mediumfrozen") {
+  if (pembeli === "enduser") {
+    hargaPerBox = hargaBoxEndUser[jenis][varian];
+    hppPerBox   = hppBoxEndUser[jenis][varian];
+  } else {
+    hargaPerBox = hargaBox[jenis][varian];
+    hppPerBox   = hppBox[jenis][varian];
+  }
+} else {
+  // produk selain frozen (mentai/original)
+  hargaPerBox = hargaBox[jenis][varian];
+  hppPerBox   = hppBox[jenis][varian];
+}
   const omzet   = jumlahBox * hargaPerBox;
   const hppTot  = jumlahBox * hppPerBox;
   const profit  = omzet - hppTot;
